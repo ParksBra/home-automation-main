@@ -1,5 +1,5 @@
 - name: run general docker compose
-  docker_compose_v2:
+  community.docker.docker_compose_v2:
     pull: always
     project_src: "{{ ansible_home_path }}/docker/docker-compose.yml"
     assume_yes: true
