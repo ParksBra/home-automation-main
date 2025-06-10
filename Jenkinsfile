@@ -36,15 +36,7 @@ pipeline {
             steps {
                 echo 'Running Ansible playbook...'
                 script {
-                    sh 'cd ansible && ../.venv/bin/ansible-playbook playbooks/test.yml -l \'${params.ANSIBLE_TARGET}\''
-                }
-            }
-        }
-        stage('cleanup') {
-            steps {
-                echo 'Cleaning up environment...'
-                script {
-                    sh 'rm -rf .venv'
+                    sh "cd ansible && ../.venv/bin/ansible-playbook playbooks/test.yml -l '${params.ANSIBLE_TARGET}'"
                 }
             }
         }
