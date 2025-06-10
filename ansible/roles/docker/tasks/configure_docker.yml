@@ -1,6 +1,8 @@
 - name: copy docker compose directory
-  copy:
-    src: "docker"
-    dest: "{{ docker_home_path }}"
-    owner: root
-    group: root
+  template:
+    src: "{{ item }}"
+    dest: "{{ ansible_home_path }}/docker"
+    owner: "{{ ansible_user }}"
+    group: "{{ ansible_group }}"
+  with_fileglob:
+    - ../templates/docker/**.yml

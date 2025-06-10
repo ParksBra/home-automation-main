@@ -4,6 +4,9 @@
     upgrade: 'safe'
     state: latest
 
+- name: create users and groups
+  include_tasks: configure_user_group.yml
+
 - name: configure patching
   include_tasks: configure_patching.yml
 

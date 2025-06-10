@@ -13,7 +13,7 @@ services:
         healthcheck:
           test: ['CMD', 'curl', '0.0.0.0:8123']
         volumes:
-            - /home/pi/docker/homeAssistant/data:/config
+            - "{{ homeassistant_config_path }}:/config"
             - /run/dbus:/run/dbus:ro
         restart: always
         devices:

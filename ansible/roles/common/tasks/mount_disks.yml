@@ -1,6 +1,6 @@
 - name: make sure mount points exist
   file:
-    dest: "{{ docker_home_path }}"
+    dest: "{{ home_path }}"
     state: directory
     recurse: true
 
@@ -13,7 +13,7 @@
     opts: defaults,nofail
     fstype: ext4
     name: "docker_home"
-    path: "{{ docker_home_path }}"
+    path: "{{ home_path }}"
     state: mounted
 
 - name: make sure mount points exist
