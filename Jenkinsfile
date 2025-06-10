@@ -13,7 +13,6 @@ pipeline {
         choice(
             name: 'ACTION',
             choices: ['apply', 'restart', 'destroy'],
-            defaultValue: 'apply',
             description: 'Select the action to perform'
         )
         string(
