@@ -37,7 +37,7 @@ pipeline {
                 withCredentials([file(credentialsId: 'lilguy_ssh_key', variable: 'ssh_key_file')]) {
                     echo 'Running Ansible playbook...'
                     script {
-                        sh "cd ansible && ../.venv/bin/ansible-playbook 'playbooks/make_server.yml' -l '${params.ANSIBLE_TARGET}' --private-key '${ssh_key_file}'"
+                        sh ".venv/bin/ansible-playbook 'ansible/playbooks/make_server.yml' -l '${params.ANSIBLE_TARGET}' --private-key '${ssh_key_file}'"
                     }
                 }
             }
