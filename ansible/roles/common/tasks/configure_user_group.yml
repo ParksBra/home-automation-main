@@ -1,10 +1,24 @@
-- name: creaste service user and group
+- name: create service group
+  group:
+    name: "{{ service_group }}"
+    state: present
+  become: true
+  become_user: root
+
+- name: creaste service user
   user:
     name: "{{ service_user }}"
     group: "{{ service_group }}"
     shell: /bin/bash
     create_home: true
     home: "/home/{{ service_user }}"
+    state: present
+  become: true
+  become_user: root
+
+- name: create ansible group
+  group:
+    name: "{{ ansible_group }}"
     state: present
   become: true
   become_user: root
