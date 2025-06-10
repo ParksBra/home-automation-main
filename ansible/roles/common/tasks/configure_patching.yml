@@ -1,7 +1,7 @@
 - name: Copy update script to main directory
   template:
     src: "update_script.j2.sh"
-    dest: "{{ main_dir }}/update_script.sh"
+    dest: "{{ home_path }}/update_script.sh"
     owner: root
     group: root
     mode: '0700'
@@ -12,6 +12,6 @@
     minute: "15"
     hour: "2"
     weekday: "1"
-    job: "{{ main_dir }}/update_script.sh"
+    job: "{{ home_path }}/update_script.sh"
     user: root
     state: present
