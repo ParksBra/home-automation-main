@@ -5,3 +5,5 @@
     - common
     - swag
     - homeassistant
+  become: true
+  become_user: "root"
