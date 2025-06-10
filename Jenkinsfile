@@ -27,7 +27,7 @@ pipeline {
             steps {
                 echo 'Preparing environment...'
                 script {
-                    sh 'sudo apt-get update && sudo apt-get install -y python3'
+                    sh 'apt-get update && apt-get install -y python3'
                     sh 'python3 -m venv .venv'
                     sh 'source .venv/bin/activate && pip install --upgrade pip && pip install -r requirements.txt'
                 }
