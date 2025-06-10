@@ -1,10 +1,5 @@
 pipeline {
-    agent {
-      docker {
-        image 'python:3.12'
-        label 'python-agent'
-      }
-    }
+    agent any
     parameters {
         gitParameter(
             type: 'BRANCH',
