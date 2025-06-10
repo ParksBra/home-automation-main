@@ -1,0 +1,23 @@
+version: '3.8'
+
+services:
+    swag:
+        image: ghcr.io/linuxserver/swag
+        container_name: swag
+        cap_add:
+            - NET_ADMIN
+        environment:
+            - PUID=1001
+            - PGID=1001
+            - TZ=America/Los_Angeles
+            - URL=blus.gay
+            - VALIDATION=dns
+            - SUBDOMAINS=ha
+            - DNSPLUGIN=cloudflare
+        volumes:
+            - /home/pi/docker/swag/data:/config
+        ports:
+            - 443:443
+        restart: always
+        healthcheck:
+          test: ['CMD', 'curl', '0.0.0.0:443']

@@ -1,0 +1,6 @@
+- template:
+    src: "nginx/proxy-confs/homeassistant.subdomain.j2.conf"
+    dest: "{{ swag_config_dir }}/nginx/proxy-confs/homeassistant.subdomain.conf"
+    owner: root
+    group: root
+    mode: '0644'

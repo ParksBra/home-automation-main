@@ -1,0 +1,7 @@
+version: '3.8'
+
+include:
+  - path: 'network/docker-compose.network.yml'
+  - path: 'srv/swag/docker-compose.swag.yml'
+  - path: 'srv/homeassistant/docker-compose.homeassistant.yml'
+  # - path: 'splunk/docker-compose.splunk.yml'

@@ -1,0 +1,20 @@
+version: '3.8'
+
+services:
+    homeassistant:
+        image: lscr.io/linuxserver/homeassistant
+        container_name: homeassistant
+        network_mode: host
+        environment:
+            - PUID=1000
+            - PGID=1000
+            - TZ=America/Los_Angeles
+            - DISABLE_JEMALLOC=true
+        healthcheck:
+          test: ['CMD', 'curl', '0.0.0.0:8123']
+        volumes:
+            - /home/pi/docker/homeAssistant/data:/config
+            - /run/dbus:/run/dbus:ro
+        restart: always
+        devices:
+            - /dev/ttyUSB0:/dev/ttyUSB0

@@ -1,0 +1,23 @@
+default_config:
+
+logger:
+  default: info
+
+automation: !include automations.yaml
+script: !include scripts.yaml
+scene: !include scenes.yaml
+group: !include groups.yaml
+
+python_script:
+
+my:
+
+http:
+  ip_ban_enabled: true
+  login_attempts_threshold: 10
+  use_x_forwarded_for: true
+  trusted_proxies:
+    - 192.168.0.0/16  # Local Lan
+    - 172.10.0.0/24  # Docker network
+
+mobile_app:

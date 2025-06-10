@@ -1,0 +1,7 @@
+- name: copy primary configuration
+  template:
+    src: "configuration.j2.yml"
+    dest: "{{ homeassistant_config_dir }}/configuration.yml"
+    owner: root
+    group: root
+    mode: '0644'
