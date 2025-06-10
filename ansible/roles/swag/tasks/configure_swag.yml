@@ -1,6 +1,6 @@
 - name: ensure path exists
   file:
-    name: "{{ swag_config_path }}"
+    name: "{{ swag_config_path }}/nginx/proxy-confs"
     state: directory
     owner: "{{ service_user }}"
     group: "{{ service_group }}"
@@ -13,3 +13,4 @@
     owner: "{{ service_user }}"
     group: "{{ service_group }}"
     mode: '0644'
+    backup: true
