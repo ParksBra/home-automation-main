@@ -1,5 +1,10 @@
 pipeline {
-    agent any
+    agent {
+      docker {
+        image 'python:3.12'
+        label 'python-agent'
+      }
+    }
     parameters {
         gitParameter(
             type: 'BRANCH',
@@ -27,7 +32,6 @@ pipeline {
             steps {
                 echo 'Preparing environment...'
                 script {
-                    sh 'apt-get update && apt-get install -y python3'
                     sh 'python3 -m venv .venv'
                     sh 'source .venv/bin/activate && pip install --upgrade pip && pip install -r requirements.txt'
                 }
