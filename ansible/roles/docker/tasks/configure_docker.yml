@@ -1,0 +1,6 @@
+- name: copy docker compose directory
+  copy:
+    src: "docker"
+    dest: "{{ docker_home_path }}"
+    owner: root
+    group: root

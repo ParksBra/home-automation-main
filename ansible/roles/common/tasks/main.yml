@@ -1,0 +1,11 @@
+- name: update apt
+  apt:
+    update_cache: yes
+    upgrade: 'safe'
+    state: latest
+
+- name: configure patching
+  include_tasks: configure_patching.yml
+
+- name: configure backup mounting points
+  include_tasks: mount_backup_disk.yml

@@ -1,0 +1,15 @@
+service_user: "brand"
+service_group: "brand"
+
+host_private_ip: "192.168.50.100"
+homeassistant_port: 8123
+homeassistant_subdomain: "ha"
+swag_port: 443
+swag_domain: "example.com"
+
+debug: false
+
+homeassistant_config_path: "/home/pi/docker/homeAssistant/data"
+homeassistant_backup_disk_path: "{{ homeassistant_config_path }}/backup"
+swag_config_path: "/home/pi/docker/swag/data"
+docker_home_path: "/home/pi/docker"

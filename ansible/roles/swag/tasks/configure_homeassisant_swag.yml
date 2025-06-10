@@ -1,6 +1,15 @@
-- template:
+- name: ensure path exists
+  file:
+    name: "{{ homeassistant_config_dir }}"
+    state: directory
+    owner: "{{ service_user }}"
+    group: "{{ service_group }}"
+    recurse: true
+
+- name: configure swag ha subdomain
+  template:
     src: "nginx/proxy-confs/homeassistant.subdomain.j2.conf"
     dest: "{{ swag_config_dir }}/nginx/proxy-confs/homeassistant.subdomain.conf"
-    owner: root
-    group: root
+    owner: "{{ service_user }}"
+    group: "{{ service_group }}"
     mode: '0644'

@@ -1,0 +1,7 @@
+- name: run general docker compose
+  docker_compose_v2:
+    pull: always
+    project_src: "docker/docker-compose.yml"
+    assume_yes: true
+    state: present
+    build: always

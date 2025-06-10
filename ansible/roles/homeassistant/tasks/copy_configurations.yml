@@ -1,7 +1,15 @@
+- name: ensure path exists
+  file:
+    name: "{{ homeassistant_config_dir }}"
+    state: directory
+    owner: "{{ service_user }}"
+    group: "{{ service_group }}"
+    recurse: true
+
 - name: copy primary configuration
   template:
     src: "configuration.j2.yml"
     dest: "{{ homeassistant_config_dir }}/configuration.yml"
-    owner: root
-    group: root
+    owner: "{{ service_user }}"
+    group: "{{ service_group }}"
     mode: '0644'

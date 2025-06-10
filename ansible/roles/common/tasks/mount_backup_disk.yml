@@ -1,0 +1,10 @@
+- name: mount backup disk
+  mount:
+    src: "/dev/sda1"
+    boot: true
+    backup: true
+    opts: defaults,nofail
+    fstype: ext4
+    name: "homeassistant_backup"
+    path: "{{ homeassistant_backup_disk_path }}"
+    state: mounted

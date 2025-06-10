@@ -1,18 +1,19 @@
 default_config:
 
 logger:
-  default: info
+  default: "{{ 'debug' if debug else 'info' }}"
 
-automation: !include automations.yaml
-script: !include scripts.yaml
-scene: !include scenes.yaml
-group: !include groups.yaml
+automation: !include automations.yml
+script: !include scripts.yml
+scene: !include scenes.yml
+group: !include groups.yml
 
 python_script:
 
 my:
 
 http:
+  server_port: {{ homeassistant_port }}
   ip_ban_enabled: true
   login_attempts_threshold: 10
   use_x_forwarded_for: true
