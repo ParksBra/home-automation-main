@@ -1,6 +1,6 @@
 - name: ensure path exists
   file:
-    name: "{{ homeassistant_config_dir }}"
+    name: "{{ swag_config_path }}"
     state: directory
     owner: "{{ service_user }}"
     group: "{{ service_group }}"
