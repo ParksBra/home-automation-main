@@ -6,3 +6,5 @@
     group: "{{ ansible_group }}"
   with_fileglob:
     - ../templates/docker/**.yml
+  become: true
+  become_user: root

@@ -1,2 +1,2 @@
 [all]
-smartboi-rpi5-0 ansible_host=192.168.50.100
+lilguy-rpi5-0 ansible_host=192.168.50.100
