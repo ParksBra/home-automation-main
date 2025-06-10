@@ -9,7 +9,7 @@
 - name: configure swag ha subdomain
   template:
     src: "nginx/proxy-confs/homeassistant.subdomain.j2.conf"
-    dest: "{{ swag_config_dir }}/nginx/proxy-confs/homeassistant.subdomain.conf"
+    dest: "{{ swag_config_path }}/nginx/proxy-confs/homeassistant.subdomain.conf"
     owner: "{{ service_user }}"
     group: "{{ service_group }}"
     mode: '0644'
