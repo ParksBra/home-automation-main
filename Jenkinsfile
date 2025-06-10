@@ -28,7 +28,7 @@ pipeline {
                 echo 'Preparing environment...'
                 script {
                     sh 'python3 -m venv .venv'
-                    sh 'source .venv/bin/activate && pip install --upgrade pip && pip install -r requirements.txt'
+                    sh '.venv/bin/pip install --upgrade pip && .venv/bin/pip install -r requirements.txt'
                 }
             }
         }
@@ -36,7 +36,7 @@ pipeline {
             steps {
                 echo 'Running Ansible playbook...'
                 script {
-                    sh 'source .venv/bin/activate && cd ansible && ansible-playbook playbooks/test.yml -l \'${params.ANSIBLE_TARGET}\''
+                    sh 'cd ansible && ../.venv/bin/ansible-playbook playbooks/test.yml -l \'${params.ANSIBLE_TARGET}\''
                 }
             }
         }
@@ -44,7 +44,7 @@ pipeline {
             steps {
                 echo 'Cleaning up environment...'
                 script {
-                    sh 'deactivate && rm -rf .venv'
+                    sh 'rm -rf .venv'
                 }
             }
         }
