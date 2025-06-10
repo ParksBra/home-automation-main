@@ -12,7 +12,6 @@
     backup: true
     opts: defaults,nofail
     fstype: ext4
-    name: "docker_home"
     path: "{{ home_path }}"
     state: mounted
 
@@ -30,6 +29,5 @@
     backup: true
     opts: defaults,nofail
     fstype: ext4
-    name: "homeassistant_backup"
     path: "{{ homeassistant_backup_disk_path }}"
     state: mounted
