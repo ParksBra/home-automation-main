@@ -13,12 +13,12 @@ pipeline {
     }
 
     stages {
-        stage('preliminary') {
+        stage('setup-environment') {
             steps {
                 echo 'Preparing environment...'
                 script {
-                    sh 'python3 -m venv venv'
-                    sh 'source venv/bin/activate && pip install --upgrade pip && pip install -r requirements.txt'
+                    sh 'python3 -m venv .venv'
+                    sh 'source .venv/bin/activate && pip install --upgrade pip && pip install -r requirements.txt'
                 }
             }
         }
@@ -26,7 +26,7 @@ pipeline {
             steps {
                 echo 'Running Ansible playbook...'
                 script {
-                    sh 'source venv/bin/activate && cd ansible && ansible-playbook playbooks/test.yml'
+                    sh 'source .venv/bin/activate && cd ansible && ansible-playbook playbooks/test.yml'
                 }
             }
         }
