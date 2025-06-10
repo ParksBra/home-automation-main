@@ -8,8 +8,8 @@
 
 - name: configure swag ha subdomain
   template:
-    src: "nginx/proxy-confs/homeassistant.subdomain.j2.conf"
-    dest: "{{ swag_config_path }}/nginx/proxy-confs/homeassistant.subdomain.conf"
+    src: "nginx/proxy-confs/homeassisant.subdomain.j2.conf"
+    dest: "{{ swag_config_path }}/nginx/proxy-confs/homeassisant.subdomain.conf"
     owner: "{{ service_user }}"
     group: "{{ service_group }}"
     mode: '0644'
