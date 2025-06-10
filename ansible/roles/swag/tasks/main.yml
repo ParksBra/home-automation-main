@@ -1,2 +1,2 @@
-- name: Configure SWAG for Home Assistant
-  include_tasks: configure_homeassistant_swag.yml
+- name: Configure SWAG for Home Assistant and other services
+  include_tasks: configure_swag.yml
