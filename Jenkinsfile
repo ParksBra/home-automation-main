@@ -17,7 +17,7 @@ pipeline {
             steps {
                 echo 'Preparing environment...'
                 script {
-                    python3 '-m venv venv'
+                    sh 'python3 -m venv venv'
                     sh 'source venv/bin/activate && pip install --upgrade pip && pip install -r requirements.txt'
                 }
             }
