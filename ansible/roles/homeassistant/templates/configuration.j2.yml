@@ -1,7 +1,7 @@
 default_config:
 
 logger:
-  default: "{{ 'debug' if debug else 'info' }}"
+  default: info
 
 automation: !include automations.yaml
 script: !include scripts.yaml
