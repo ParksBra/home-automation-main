@@ -21,6 +21,10 @@
     state: directory
     recurse: true
 
+- name: list ansible devices
+  ansible.builtin.debug:
+    msg: "{{ ansible_devices }}"
+
 - name: mount backup disk
   when: ansible_devices['sda1'] is defined
   mount:
