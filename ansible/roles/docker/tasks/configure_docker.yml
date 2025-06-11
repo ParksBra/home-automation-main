@@ -1,6 +1,6 @@
 - name: ensure docker dir structure exists
   file:
-    name: "{{ ansible_home_path }}/docker/{{ item.path }}"
+    name: "{{ docker_compose_path }}/{{ item.path }}"
     state: directory
     owner: "{{ ansible_user }}"
     group: "{{ ansible_group }}"
@@ -11,7 +11,7 @@
 - name: copy docker compose files
   template:
     src: "{{ item.src }}"
-    dest: "{{ ansible_home_path }}/docker/{{ item.path }}"
+    dest: "{{ docker_compose_path }}/{{ item.path }}"
     owner: "{{ ansible_user }}"
     group: "{{ ansible_group }}"
   with_filetree: ../templates/docker
