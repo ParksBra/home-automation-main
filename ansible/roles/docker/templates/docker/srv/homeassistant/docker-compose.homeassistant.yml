@@ -13,7 +13,6 @@ services:
             - "{{ homeassistant_config_path }}:/config"
             - /run/dbus:/run/dbus:ro
         restart: always
-        recreate: always
         devices:
             - /dev/ttyUSB0:/dev/ttyUSB0
         ports:
