@@ -1,5 +1,3 @@
-version: '3.8'
-
 include:
   - path: 'network/docker-compose.network.yml'
   - path: 'srv/swag/docker-compose.swag.yml'
