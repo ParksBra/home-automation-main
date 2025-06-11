@@ -10,11 +10,6 @@ pipeline {
             selectedValue: 'DEFAULT',
             sortMode: 'DESCENDING_SMART'
         )
-        choice(
-            name: 'ACTION',
-            choices: ['apply', 'restart', 'destroy'],
-            description: 'Select the action to perform'
-        )
         string(
             name: 'ANSIBLE_TARGET',
             defaultValue: 'all',
