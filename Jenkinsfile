@@ -16,6 +16,9 @@ pipeline {
             description: 'Ansible target hosts using ansible -l syntax'
         )
     }
+    triggers {
+        pollSCM('* * * * *')
+    }
 
     stages {
         stage('setup-environment') {
@@ -69,8 +72,4 @@ pipeline {
         sh(script: "rm -rf ${env.TF_DIR}/")
         }
     }
-}
-
-triggers {
-    pollSCM('* * * * *')
 }
