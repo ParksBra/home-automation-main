@@ -2,6 +2,7 @@
   group:
     name: "{{ service_group }}"
     state: present
+    gid: 1001
   become: true
   become_user: root
 
@@ -13,6 +14,8 @@
     create_home: true
     home: "/home/{{ service_user }}"
     state: present
+    uid: 1001
+    
   become: true
   become_user: root
 
