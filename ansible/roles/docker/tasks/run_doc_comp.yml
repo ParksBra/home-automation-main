@@ -5,5 +5,5 @@
     assume_yes: true
     state: present
     build: policy
-    recreate: "{{ 'always' if force_container_rebuild is defined and force_container_rebuild else 'auto'}}"
+    recreate: "{{ 'always' if force_container_rebuild is defined and force_container_rebuild == true else 'auto'}}"
     remove_orphans: true
