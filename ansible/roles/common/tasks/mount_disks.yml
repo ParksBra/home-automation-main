@@ -26,9 +26,9 @@
     msg: "{{ ansible_devices }}"
 
 - name: mount backup disk
-  when: ansible_devices['sda1'] is defined
+  when: ansible_devices['sda'] is defined
   mount:
-    src: "/dev/sda1"
+    src: "/dev/sda"
     boot: true
     backup: true
     opts: defaults,nofail
