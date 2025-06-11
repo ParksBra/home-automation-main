@@ -15,7 +15,7 @@ services:
         volumes:
             - "{{ swag_config_path }}:/config"
         ports:
-            - 443:443
+            - "{{ swag_port }}:{{ swag_port }}"
         restart: always
         healthcheck:
           test: ['CMD', 'curl', '0.0.0.0:{{ swag_port }}']
