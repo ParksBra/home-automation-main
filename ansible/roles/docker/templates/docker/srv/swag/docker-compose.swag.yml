@@ -10,9 +10,9 @@ services:
             - PUID=1001
             - PGID=1001
             - TZ=America/Los_Angeles
-            - URL=blus.gay
+            - URL={{ swag_domain }}
             - VALIDATION=dns
-            - SUBDOMAINS=ha
+            - SUBDOMAINS={{ homeassistant_subdomain }}
             - DNSPLUGIN=cloudflare
         volumes:
             - "{{ swag_config_path }}:/config"
@@ -20,4 +20,4 @@ services:
             - 443:443
         restart: always
         healthcheck:
-          test: ['CMD', 'curl', '0.0.0.0:443']
+          test: ['CMD', 'curl', '0.0.0.0:{{ swag_port }}']
