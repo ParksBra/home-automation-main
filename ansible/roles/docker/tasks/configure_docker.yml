@@ -1,8 +1,19 @@
 - name: copy docker compose directory
-  template:
-    src: "{{ item.src }}"
-    dest: "{{ ansible_home_path }}/docker/{{ item.path }}"
-    owner: "{{ ansible_user }}"
-    group: "{{ ansible_group }}"
   with_filetree: ../templates/docker
   when: item.state == 'file'
+  block:
+  - name: ensure docker path exists
+    file:
+      name: "{{ ansible_home_path }}/docker/{{ item.path | dirname }}"
+      state: directory
+      owner: "{{ ansible_user }}"
+      group: "{{ ansible_group }}"
+      recurse: true
+
+  - name: copy docker compose files
+    template:
+      src: "{{ item.src }}"
+      dest: "{{ ansible_home_path }}/docker/{{ item.path }}"
+      owner: "{{ ansible_user }}"
+      group: "{{ ansible_group }}"
+  
