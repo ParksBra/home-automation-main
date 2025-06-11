@@ -1,6 +1,6 @@
 - name: debug force_container_rebuild
   debug:
-    msg: "force_container_rebuild is set to {{ force_container_rebuild }}"
+    msg: "force_container_rebuild is set to {{ force_container_rebuild }} {{ 'always' if force_container_rebuild is defined and force_container_rebuild is true else 'auto'}}"
 
 - name: run general docker compose
   community.docker.docker_compose_v2:
