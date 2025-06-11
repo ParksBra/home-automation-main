@@ -15,6 +15,11 @@ pipeline {
             defaultValue: 'all',
             description: 'Ansible target hosts using ansible -l syntax'
         )
+        booleanParam(
+            name: 'FORCE_CONTAINER_REBUILD',
+            defaultValue: false,
+            description: 'Force rebuild of Docker containers'
+        )
     }
     triggers {
         pollSCM('* * * * *')
@@ -45,7 +50,7 @@ pipeline {
                 withCredentials([file(credentialsId: 'lilguy_ssh_key', variable: 'ssh_key_file')]) {
                     echo 'Running apply_docker Ansible playbook...'
                     script {
-                        sh ".venv/bin/ansible-playbook 'ansible/playbooks/apply_docker.yml' -l '${params.ANSIBLE_TARGET}' --private-key '${ssh_key_file}'"
+                        sh ".venv/bin/ansible-playbook 'ansible/playbooks/apply_docker.yml' -l '${params.ANSIBLE_TARGET}' --private-key '${ssh_key_file}' --extra-vars 'force_container_rebuild=${params.FORCE_CONTAINER_REBUILD}'"
                     }
                 }
             }

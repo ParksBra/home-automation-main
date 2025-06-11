@@ -5,4 +5,4 @@
     assume_yes: true
     state: present
     build: always
-    recreate: always
+    recreate: "{{ 'always' if force_container_rebuild is defined and force_container_rebuild else 'auto'}}"
