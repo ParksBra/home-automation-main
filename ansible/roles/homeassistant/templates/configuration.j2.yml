@@ -3,10 +3,10 @@ default_config:
 logger:
   default: "{{ 'debug' if debug else 'info' }}"
 
-automation: !include automations.yml
-script: !include scripts.yml
-scene: !include scenes.yml
-group: !include groups.yml
+automation: !include automations.yaml
+script: !include scripts.yaml
+scene: !include scenes.yaml
+group: !include groups.yaml
 
 python_script:
 
