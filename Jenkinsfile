@@ -11,6 +11,11 @@ pipeline {
             sortMode: 'DESCENDING_SMART'
         )
         string(
+            name: 'SSH_KEY',
+            defaultValue: 'ansible-ssh-key',
+            description: 'Name of stored SSH key secret file for accessing the target servers'
+        )
+        string(
             name: 'ANSIBLE_TARGET',
             defaultValue: 'all',
             description: 'Ansible target hosts using ansible -l syntax'
@@ -37,7 +42,7 @@ pipeline {
         }
         stage('make-server') {
             steps {
-                withCredentials([file(credentialsId: 'lilguy_ssh_key', variable: 'ssh_key_file')]) {
+                withCredentials([file(credentialsId: params.SSH_KEY, variable: 'ssh_key_file')]) {
                     echo 'Running make_server Ansible playbook...'
                     script {
                         sh ".venv/bin/ansible-playbook 'ansible/playbooks/make_server.yml' -l '${params.ANSIBLE_TARGET}' --private-key '${ssh_key_file}'"
@@ -47,7 +52,7 @@ pipeline {
         }
         stage('apply-docker-compose') {
             steps {
-                withCredentials([file(credentialsId: 'lilguy_ssh_key', variable: 'ssh_key_file')]) {
+                withCredentials([file(credentialsId: params.SSH_KEY, variable: 'ssh_key_file')]) {
                     echo 'Running apply_docker Ansible playbook...'
                     script {
                         sh ".venv/bin/ansible-playbook 'ansible/playbooks/apply_docker.yml' -l '${params.ANSIBLE_TARGET}' --private-key '${ssh_key_file}' --extra-vars 'force_container_rebuild=${params.FORCE_CONTAINER_REBUILD}'"
@@ -57,7 +62,7 @@ pipeline {
         }
         stage('apply-configurations') {
             steps {
-                withCredentials([file(credentialsId: 'lilguy_ssh_key', variable: 'ssh_key_file')]) {
+                withCredentials([file(credentialsId: params.SSH_KEY, variable: 'ssh_key_file')]) {
                     echo 'Running apply_configurations Ansible playbook...'
                     script {
                         sh ".venv/bin/ansible-playbook 'ansible/playbooks/apply_configurations.yml' -l '${params.ANSIBLE_TARGET}' --private-key '${ssh_key_file}'"
@@ -66,15 +71,13 @@ pipeline {
             }
         }
     }
-    post
-    {
-        success
-        {
-        echo "${params.STACK_NAME} ${BUILD_TAG} Completed Successfully"
+    // Post work actions
+    post {
+        success {
+            echo "${params.STACK_NAME} ${BUILD_TAG} Completed Successfully"
         }
-        always
-        {
-        sh(script: "rm -rf ${env.TF_DIR}/")
+        always {
+            sh(script: "rm -rf ${env.TF_DIR}/")
         }
     }
 }

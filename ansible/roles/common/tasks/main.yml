@@ -6,8 +6,8 @@
 
 - name: set hostname
   hostname:
-    name: "{{ ansible_hostname }}"
-  when: ansible_hostname is defined
+    name: "{{ inventory_hostname }}"
+  when: inventory_hostname is defined
 
 - name: create users and groups
   include_tasks: configure_user_group.yml

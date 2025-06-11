@@ -3,5 +3,5 @@ apt full-upgrade -y
 cd {{ docker_compose_path }}
 docker compose pull
 docker compose up -d
-sleep 20
+sleep 10
 shutdown -r now
