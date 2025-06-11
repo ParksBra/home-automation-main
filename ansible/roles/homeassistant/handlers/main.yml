@@ -1,4 +1,2 @@
 - name: restart_homeassistant
   shell: 'docker container restart homeassistant'
-  become: true
-  become_user: "{{ service_user }}"
