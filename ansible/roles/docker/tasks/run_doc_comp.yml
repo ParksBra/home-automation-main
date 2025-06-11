@@ -4,5 +4,6 @@
     project_src: "{{ ansible_home_path }}/docker"
     assume_yes: true
     state: present
-    build: always
+    build: policy
     recreate: "{{ 'always' if force_container_rebuild is defined and force_container_rebuild else 'auto'}}"
+    remove_orphans: true
