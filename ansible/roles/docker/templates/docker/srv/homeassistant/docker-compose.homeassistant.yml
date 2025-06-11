@@ -18,3 +18,5 @@ services:
         restart: always
         devices:
             - /dev/ttyUSB0:/dev/ttyUSB0
+        ports:
+            - 8123:8123
