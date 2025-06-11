@@ -32,12 +32,32 @@ pipeline {
                 }
             }
         }
-        stage('ansible-playbook') {
+        stage('make-server') {
             steps {
                 withCredentials([file(credentialsId: 'lilguy_ssh_key', variable: 'ssh_key_file')]) {
-                    echo 'Running Ansible playbook...'
+                    echo 'Running make_server Ansible playbook...'
                     script {
                         sh ".venv/bin/ansible-playbook 'ansible/playbooks/make_server.yml' -l '${params.ANSIBLE_TARGET}' --private-key '${ssh_key_file}'"
+                    }
+                }
+            }
+        }
+        stage('apply-docker-compose') {
+            steps {
+                withCredentials([file(credentialsId: 'lilguy_ssh_key', variable: 'ssh_key_file')]) {
+                    echo 'Running apply_docker Ansible playbook...'
+                    script {
+                        sh ".venv/bin/ansible-playbook 'ansible/playbooks/apply_docker.yml' -l '${params.ANSIBLE_TARGET}' --private-key '${ssh_key_file}'"
+                    }
+                }
+            }
+        }
+        stage('apply-configurations') {
+            steps {
+                withCredentials([file(credentialsId: 'lilguy_ssh_key', variable: 'ssh_key_file')]) {
+                    echo 'Running apply_configurations Ansible playbook...'
+                    script {
+                        sh ".venv/bin/ansible-playbook 'ansible/playbooks/apply_configurations.yml' -l '${params.ANSIBLE_TARGET}' --private-key '${ssh_key_file}'"
                     }
                 }
             }

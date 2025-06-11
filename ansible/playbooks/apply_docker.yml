@@ -1,6 +1,6 @@
 ---
 - hosts: all
   roles:
-    - common
+    - docker
   become: true
   become_user: root

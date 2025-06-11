@@ -1,6 +1,7 @@
 ---
 - hosts: all
   roles:
-    - common
+    - homeassistant
+    - swag
   become: true
   become_user: root
