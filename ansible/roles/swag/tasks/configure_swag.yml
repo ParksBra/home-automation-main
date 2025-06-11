@@ -12,6 +12,6 @@
     dest: "{{ swag_config_path }}/nginx/proxy-confs/homeassistant.subdomain.conf"
     owner: "{{ service_user }}"
     group: "{{ service_group }}"
-    mode: '0644'
+    mode: '664'
     backup: true
   notify: restart_swag

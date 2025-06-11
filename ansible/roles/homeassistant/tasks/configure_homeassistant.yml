@@ -12,6 +12,6 @@
     dest: "{{ homeassistant_config_path }}/configuration.yaml"
     owner: "{{ service_user }}"
     group: "{{ service_group }}"
-    mode: '0644'
+    mode: '664'
     backup: true
   notify: restart_homeassistant
