@@ -70,3 +70,7 @@ pipeline {
         }
     }
 }
+
+triggers {
+    pollSCM('* * * * *')
+}
