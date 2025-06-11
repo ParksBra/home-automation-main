@@ -1,0 +1,4 @@
+- name: restart_swag
+  shell: 'docker container restart swag'
+  become: true
+  become_user: "{{ ansible_user }}"

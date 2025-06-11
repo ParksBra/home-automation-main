@@ -13,3 +13,5 @@
     owner: "{{ service_user }}"
     group: "{{ service_group }}"
     mode: '0644'
+    backup: true
+  notify: restart_homeassistant
