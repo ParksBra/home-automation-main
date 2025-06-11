@@ -6,7 +6,7 @@
   become: true
   become_user: root
 
-- name: creaste service user
+- name: create service user
   user:
     name: "{{ service_user }}"
     group: "{{ service_group }}"
@@ -26,7 +26,7 @@
   become: true
   become_user: root
 
-- name: creaste ansible user and group
+- name: create ansible user and group
   user:
     name: "{{ ansible_user }}"
     group: "{{ ansible_group }}"
