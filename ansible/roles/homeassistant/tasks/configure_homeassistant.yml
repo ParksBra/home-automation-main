@@ -9,7 +9,7 @@
 - name: copy primary configuration
   template:
     src: "configuration.j2.yml"
-    dest: "{{ homeassistant_config_path }}/configuration.yml"
+    dest: "{{ homeassistant_config_path }}/configuration.yaml"
     owner: "{{ service_user }}"
     group: "{{ service_group }}"
     mode: '0644'
