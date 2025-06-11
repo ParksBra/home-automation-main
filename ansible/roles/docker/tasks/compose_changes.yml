@@ -1,7 +1,7 @@
-- name: set fact incase force_container_rebuild is not defined
+- name: set fact incase force_container_recreate is not defined
   set_fact:
-    force_container_rebuild: 'false'
-  when: force_container_rebuild is not defined
+    force_container_recreate: 'false'
+  when: force_container_recreate is not defined
 
 - name: run general docker compose
   community.docker.docker_compose_v2:
@@ -10,5 +10,5 @@
     assume_yes: true
     state: present
     build: always
-    recreate: "{{ 'always' if force_container_rebuild == 'true' else 'auto'}}"
+    recreate: "{{ 'always' if force_container_recreate == 'true' else 'auto'}}"
     remove_orphans: true
