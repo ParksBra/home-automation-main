@@ -1,10 +1,8 @@
 - name: copy docker compose directory
   template:
-    src: "{{ item }}"
-    dest: "{{ ansible_home_path }}/docker/"
+    src: "{{ item.src }}"
+    dest: "{{ ansible_home_path }}/docker/{{ item.path }}"
     owner: "{{ ansible_user }}"
     group: "{{ ansible_group }}"
-  with_fileglob:
-    - ../templates/docker/**.yml
-  become: true
-  become_user: root
+  with_filetree: ../templates/docker
+  when: item.state == 'file'
