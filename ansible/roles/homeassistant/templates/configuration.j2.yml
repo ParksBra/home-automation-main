@@ -20,6 +20,6 @@ http:
   trusted_proxies:
     - 192.168.0.0/16  # Local Lan
     - 172.10.0.0/24  # Docker network
-    - 172.0.0.1/32 # Localhost
+    - 127.0.0.1/32 # Localhost
 
 mobile_app:
