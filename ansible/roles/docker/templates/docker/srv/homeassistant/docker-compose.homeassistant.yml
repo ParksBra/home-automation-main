@@ -17,3 +17,4 @@ services:
             - /dev/ttyUSB0:/dev/ttyUSB0
         ports:
             - "{{ homeassistant_port }}:{{ homeassistant_port }}"
+            - 3493:3493 # Netwrok UPS Tools
