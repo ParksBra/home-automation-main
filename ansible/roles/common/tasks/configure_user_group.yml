@@ -26,7 +26,7 @@
   become: true
   become_user: root
 
-- name: create ansible user and group
+- name: create ansible user
   user:
     name: "{{ ansible_user }}"
     group: "{{ ansible_group }}"
