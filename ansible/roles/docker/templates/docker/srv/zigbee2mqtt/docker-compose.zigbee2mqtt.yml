@@ -7,7 +7,7 @@ services:
             - "{{ zigbee2mqtt_config_path }}:/config"
             - /run/udev:/run/udev:ro
         ports:
-            - 8080:8080
+            - 8234:8080
         environment:
             - TZ=America/Los_Angeles
             - PUID=1001
