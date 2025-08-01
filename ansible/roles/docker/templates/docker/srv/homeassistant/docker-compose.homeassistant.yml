@@ -8,15 +8,13 @@ services:
             - TZ=America/Los_Angeles
             - DISABLE_JEMALLOC=true
         healthcheck:
-            test: ['CMD', 'curl', '0.0.0.0:{{ homeassistant_port }}/manifest.json']
+            test: ['CMD', 'curl', 'host.docker.internal:{{ homeassistant_port }}/manifest.json']
         volumes:
             - "{{ homeassistant_config_path }}:/config"
             - /run/dbus:/run/dbus:ro
         restart: always
         devices:
             - /dev/ttyUSB0:/dev/ttyUSB0
-        # ports:
-        #     - "{{ homeassistant_port }}:8123"
         networks:
             - homeassistant_backend
             - swag_frontend

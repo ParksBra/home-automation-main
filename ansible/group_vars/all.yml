@@ -3,7 +3,6 @@ service_group: "docker"
 ansible_user: "ansible"
 ansible_group: "ansible"
 
-nut_upsd_port: 3493
 homeassistant_port: 8123
 homeassistant_subdomain: "ha"
 swag_port: 443
