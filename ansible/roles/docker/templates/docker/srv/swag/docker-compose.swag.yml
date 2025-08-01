@@ -18,4 +18,4 @@ services:
             - "{{ swag_port }}:{{ swag_port }}"
         restart: always
         healthcheck:
-          test: ['CMD', 'curl', 'https://ha.blus.gay:{{ swag_port }}/manifest.json']
+            test: ['CMD', 'curl', 'https://{{ homeassistant_subdomain }}.{{ swag_domain }}:{{ swag_port }}/manifest.json']
