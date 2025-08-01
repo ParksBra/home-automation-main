@@ -3,6 +3,7 @@ service_group: "docker"
 ansible_user: "ansible"
 ansible_group: "ansible"
 
+nut_upsd_port: 3493
 homeassistant_port: 8123
 homeassistant_subdomain: "ha"
 swag_port: 443
@@ -15,3 +16,5 @@ docker_compose_path: "{{ ansible_home_path }}/docker"
 swag_config_path: "{{ home_path }}/swag/data"
 homeassistant_config_path: "{{ home_path }}/homeassistant/data"
 homeassistant_backup_disk_path: "{{ homeassistant_config_path }}/backups"
+zigbee2mqtt_config_path: "{{ home_path }}/zigbee2mqtt/data"
+zigbee2mqtt_backup_disk_path: "{{ zigbee2mqtt_config_path }}/backups"

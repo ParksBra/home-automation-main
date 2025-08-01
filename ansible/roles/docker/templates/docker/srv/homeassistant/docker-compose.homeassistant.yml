@@ -8,7 +8,7 @@ services:
             - TZ=America/Los_Angeles
             - DISABLE_JEMALLOC=true
         healthcheck:
-          test: ['CMD', 'curl', '0.0.0.0:{{ homeassistant_port }}/manifest.json']
+            test: ['CMD', 'curl', '0.0.0.0:{{ homeassistant_port }}/manifest.json']
         volumes:
             - "{{ homeassistant_config_path }}:/config"
             - /run/dbus:/run/dbus:ro
@@ -16,5 +16,4 @@ services:
         devices:
             - /dev/ttyUSB0:/dev/ttyUSB0
         ports:
-            - "{{ homeassistant_port }}:{{ homeassistant_port }}"
-            - 3493:3493 # Netwrok UPS Tools
+            - "{{ homeassistant_port }}:8123"

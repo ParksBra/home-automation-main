@@ -1,0 +1,14 @@
+services:
+  nut-upsd:
+    image: instantlinux/nut-upsd
+    container_name: nut
+    environment:
+      - TZ=${TZ:-America/Denver}
+      - API_PASSWORD=${API_PASSWORD:-'YourPasswordForAPIaccess'}
+      - DRIVER=usbhid-ups
+      - NAME=ups-ST625U
+    devices:
+      - /dev/bus/usb:/dev/bus/usb
+    ports:
+      - "{{ nut_upsd_port }}:3493"
+    restart: always
