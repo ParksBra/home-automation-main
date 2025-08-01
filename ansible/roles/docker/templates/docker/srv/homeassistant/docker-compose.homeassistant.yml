@@ -20,3 +20,4 @@ services:
         networks:
             - homeassistant_backend
             - swag_frontend
+            - zigbee2mqtt_homeassistant
