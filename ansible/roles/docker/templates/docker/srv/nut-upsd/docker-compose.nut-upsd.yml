@@ -8,6 +8,7 @@ services:
       - TZ=America/Los_Angeles
       - DRIVER=usbhid-ups
       - NAME=upsST625U
+      - VENDORID=0x0764
     devices:
       - /dev/bus/usb:/dev/bus/usb
     healthcheck:
