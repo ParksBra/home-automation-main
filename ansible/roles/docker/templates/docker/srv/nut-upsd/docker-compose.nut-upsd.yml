@@ -10,7 +10,7 @@ services:
       - NAME=upsST625U
       - VENDORID=0x0764
     devices:
-      - /dev/bus/usb:/dev/bus/usb
+      - /dev/usb/hiddev0:/dev/usb/hiddev0
     healthcheck:
       test: ['CMD', 'curl', '0.0.0.0:3493']
     volumes:
