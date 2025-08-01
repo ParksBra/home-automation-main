@@ -3,9 +3,10 @@ service_group: "docker"
 ansible_user: "ansible"
 ansible_group: "ansible"
 
-homeassistant_port: 8123
 homeassistant_subdomain: "ha"
-swag_port: 443
+swag_external_port: 443
+swag_internal_port: 8123
+swag_internal_cidr: "192.168.0.0/16"
 swag_domain: "parkl.ee"
 
 debug: false
