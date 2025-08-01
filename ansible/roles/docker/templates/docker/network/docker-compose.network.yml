@@ -1,2 +1,7 @@
 networks:
-  srv: {}
+  homeassistant_backend:
+    driver: bridge
+  swag_frontend:
+    driver: bridge
+  zigbee2mqtt_homeassistant:
+    driver: bridge

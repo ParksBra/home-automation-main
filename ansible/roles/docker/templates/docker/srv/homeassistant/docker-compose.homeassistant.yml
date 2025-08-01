@@ -15,5 +15,8 @@ services:
         restart: always
         devices:
             - /dev/ttyUSB0:/dev/ttyUSB0
-        ports:
-            - "{{ homeassistant_port }}:8123"
+        # ports:
+        #     - "{{ homeassistant_port }}:8123"
+        networks:
+            - homeassistant_backend
+            - swag_frontend
