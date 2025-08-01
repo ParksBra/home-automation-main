@@ -17,3 +17,5 @@ services:
     volumes:
       - "{{ nut_upsd_config_path }}:/config"
     restart: always
+    networks:
+      - homeassistant_nut-upsd

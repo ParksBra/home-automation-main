@@ -5,3 +5,5 @@ networks:
     driver: bridge
   zigbee2mqtt_homeassistant:
     driver: bridge
+  homeassistant_nut-upsd:
+    driver: bridge
