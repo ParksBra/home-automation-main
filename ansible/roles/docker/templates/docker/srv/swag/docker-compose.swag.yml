@@ -15,7 +15,8 @@ services:
         volumes:
             - "{{ swag_config_path }}:/config"
         ports:
-            - "{{ swag_port }}:{{ swag_port }}"
+            - "{{ swag_external_port }}:{{ swag_external_port }}"
+            - "{{ swag_internal_port }}:{{ swag_internal_port }}"
         restart: always
         healthcheck:
             test: ['CMD', 'curl', 'https://{{ homeassistant_subdomain }}.{{ swag_domain }}:{{ swag_port }}/manifest.json']
