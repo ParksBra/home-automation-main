@@ -12,8 +12,6 @@ services:
             - TZ=America/Los_Angeles
             - PUID=1001
             - PGID=1001
-        devices:
-            # - /dev/ttyUSB0:/dev/ttyUSB0
         networks:
             - zigbee2mqtt_homeassistant
         healthcheck:
