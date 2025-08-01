@@ -17,4 +17,4 @@ services:
         networks:
             - zigbee2mqtt_homeassistant
         healthcheck:
-            test: ['CMD', 'curl', 'host.docker.internal:1883']
+            test: ['CMD', 'curl', '0.0.0.0:1883']

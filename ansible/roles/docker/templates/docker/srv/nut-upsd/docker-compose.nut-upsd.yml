@@ -12,7 +12,7 @@ services:
     devices:
       - /dev/bus/usb:/dev/bus/usb
     healthcheck:
-      test: ['CMD', 'curl', 'host.docker.internal:3493']
+      test: ['CMD', 'curl', '0.0.0.0:3493']
     volumes:
       - "{{ nut_upsd_config_path }}:/config"
     restart: always
