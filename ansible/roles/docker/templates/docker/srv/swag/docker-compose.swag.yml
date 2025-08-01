@@ -19,6 +19,6 @@ services:
             - "{{ swag_internal_port }}:{{ swag_internal_port }}"
         restart: always
         healthcheck:
-            test: ['CMD', 'curl', 'https://{{ homeassistant_subdomain }}.{{ swag_domain }}:{{ swag_port }}/manifest.json']
+            test: ['CMD', 'curl', 'https://{{ homeassistant_subdomain }}.{{ swag_domain }}:{{ swag_external_port }}/manifest.json']
         networks:
             - swag_frontend
