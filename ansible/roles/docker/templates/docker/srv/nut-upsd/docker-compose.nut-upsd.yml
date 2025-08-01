@@ -7,7 +7,7 @@ services:
       - PGID=1001
       - TZ=America/Los_Angeles
       - DRIVER=usbhid-ups
-      - NAME=ups-ST625U
+      - NAME=upsST625U
     devices:
       - /dev/bus/usb:/dev/bus/usb
     healthcheck:
