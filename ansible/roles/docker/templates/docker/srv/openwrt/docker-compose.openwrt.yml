@@ -20,6 +20,8 @@ services:
       - CPU_COUNT=4
       - RAM_COUNT=4096
       - IMAGE_SIZE_ON_INIT=16384
+      - DEBUG=true
+      - OPENWRT_AFTER_BOOT_CMD=ifconfig -a
     networks:
       openwrt_wan:
         mac_address: 02:42:05:96:eb:50
