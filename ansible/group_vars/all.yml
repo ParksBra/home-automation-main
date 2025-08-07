@@ -19,6 +19,9 @@ homeassistant_backup_disk_path: "{{ homeassistant_config_path }}/backups"
 zigbee2mqtt_config_path: "{{ home_path }}/zigbee2mqtt/data"
 zigbee2mqtt_backup_disk_path: "{{ zigbee2mqtt_config_path }}/backups"
 nut_upsd_config_path: "{{ home_path }}/nut-upsd/data"
+openwrt_config_path: "{{ home_path }}/openwrt/data"
+openwrt_wan_interface: "enx2ccf67fb401c"
+openwrt_lan_interface: "enx121f61f080c5"
 
 docker_services:
   - swag

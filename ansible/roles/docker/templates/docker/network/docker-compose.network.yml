@@ -7,3 +7,5 @@ networks:
     driver: bridge
   homeassistant_nut-upsd:
     driver: bridge
+  openwrt:
+    driver: bridge

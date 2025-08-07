@@ -1,0 +1,30 @@
+services:
+  openwrt:
+    container_name: openwrt
+    image: albrechtloh/openwrt-docker
+    restart: always
+    ports:
+      - 8006:8006
+    environment:
+      - TZ=America/Los_Angeles
+      - PUID=1001
+      - PGID=1001
+      - WAN_IF={{ openwrt_wan_interface }}
+      - LAN_IF={{ openwrt_lan_interface}}
+      - FORWARD_LUCI=true
+      - CPU_COUNT=8
+      - RAM_COUNT=4096
+
+    networks:
+      - openwrt
+    devices:
+      - /dev/kvm
+    device_cgroup_rules:
+      - 'c *:* rwm'
+    cap_add:
+      - NET_ADMIN
+    pid: "host"
+    privileged: true
+    volumes:
+      - /dev:/dev
+      - "{{ openwrt_config_path }}:/storage"

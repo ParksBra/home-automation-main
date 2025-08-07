@@ -1,22 +1,22 @@
 services:
-    homeassistant:
-        image: lscr.io/linuxserver/homeassistant
-        container_name: homeassistant
-        environment:
-            - PUID=1001
-            - PGID=1001
-            - TZ=America/Los_Angeles
-            - DISABLE_JEMALLOC=true
-        healthcheck:
-            test: ['CMD', 'curl', '0.0.0.0:8123/manifest.json']
-        volumes:
-            - "{{ homeassistant_config_path }}:/config"
-            - /run/dbus:/run/dbus:ro
-        restart: always
-        devices:
-            - /dev/ttyUSB0:/dev/ttyUSB0
-        networks:
-            - homeassistant_backend
-            - swag_frontend
-            - zigbee2mqtt_homeassistant
-            - homeassistant_nut-upsd
+  homeassistant:
+    image: lscr.io/linuxserver/homeassistant
+    container_name: homeassistant
+    environment:
+      - PUID=1001
+      - PGID=1001
+      - TZ=America/Los_Angeles
+      - DISABLE_JEMALLOC=true
+    healthcheck:
+      test: ['CMD', 'curl', '0.0.0.0:8123/manifest.json']
+    volumes:
+      - "{{ homeassistant_config_path }}:/config"
+      - /run/dbus:/run/dbus:ro
+    restart: always
+    devices:
+      - /dev/ttyUSB0:/dev/ttyUSB0
+    networks:
+      - homeassistant_backend
+      - swag_frontend
+      - zigbee2mqtt_homeassistant
+      - homeassistant_nut-upsd
