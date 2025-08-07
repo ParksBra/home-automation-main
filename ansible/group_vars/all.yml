@@ -28,3 +28,4 @@ docker_services:
   - homeassistant
   - nut-upsd
   - zigbee2mqtt
+  - openwrt
