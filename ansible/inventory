@@ -5,5 +5,11 @@ lilguy-rpi5-0 ansible_host=192.168.50.100
 [homeassistant]
 lilguy-rpi5-0 ansible_host=192.168.50.100
 
-[minecraft]
-# lilguy-rpi5-1 ansible_host=192.168.50.101
+[nut-upsd]
+lilguy-rpi5-0 ansible_host=192.168.50.100
+
+[swag]
+lilguy-rpi5-0 ansible_host=192.168.50.100
+
+[zigbee2mqtt]
+lilguy-rpi5-0 ansible_host=192.168.50.100
