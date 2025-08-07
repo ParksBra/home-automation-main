@@ -21,7 +21,8 @@ services:
       - RAM_COUNT=4096
       - IMAGE_SIZE_ON_INIT=16384
     networks:
-      - openwrt
+      - openwrt_wan
+      - openwrt_lan
     devices:
       - /dev/kvm
     device_cgroup_rules:
@@ -37,3 +38,15 @@ services:
 
 volumes:
   data:
+
+networks:
+  openwrt_wan:
+    driver: macvlan
+    driver_opts:
+      parent: eth0
+      priority: 1000
+  openwrt_lan:
+    driver: macvlan
+    driver_opts:
+      parent: eth1
+      priority: 900
