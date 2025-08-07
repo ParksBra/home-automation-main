@@ -5,16 +5,19 @@ services:
     restart: always
     ports:
       - 8006:8006
+      - 8000:8000
     environment:
       - TZ=America/Los_Angeles
       - PUID=1001
       - PGID=1001
       - WAN_IF={{ openwrt_wan_interface }}
-      - LAN_IF={{ openwrt_lan_interface}}
+      - LAN_IF={{ openwrt_lan_interface }}
+      - PCI_1=0001:01:00.0
+      - PCI_2=0002:01:00.0
       - FORWARD_LUCI=true
       - CPU_COUNT=8
       - RAM_COUNT=4096
-
+      - IMAGE_SIZE_ON_INIT=16384
     networks:
       - openwrt
     devices:
