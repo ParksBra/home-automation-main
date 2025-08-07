@@ -29,5 +29,8 @@ services:
     pid: "host"
     privileged: true
     volumes:
-      - /dev:/dev
-      - "{{ openwrt_config_path }}:/storage"
+      - /dev:/dev/
+      - data:/storage/
+
+volumes:
+  data:
