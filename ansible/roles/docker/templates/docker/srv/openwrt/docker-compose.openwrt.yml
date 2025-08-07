@@ -10,7 +10,7 @@ services:
       - TZ=America/Los_Angeles
       - PUID=1001
       - PGID=1001
-      - WAN_IF=enx02420596eb50
+      - WAN_IF=host
       - LAN_IF=veth
       # - WAN_IF=eth0
       # - LAN_IF=eth1
