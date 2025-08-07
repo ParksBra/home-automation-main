@@ -5,7 +5,7 @@ services:
     restart: always
     ports:
       - 8006:8006
-      - 8000:8000
+      # - 8000:8000
     environment:
       - TZ=America/Los_Angeles
       - PUID=1001
@@ -14,8 +14,8 @@ services:
       # - LAN_IF={{ openwrt_lan_interface }}
       - WAN_IF=host
       - LAN_IF=veth
-      - PCI_1=0001:01:00.0
-      - PCI_2=0002:01:00.0
+      # - PCI_1=0001:01:00.0
+      # - PCI_2=0002:01:00.0
       - FORWARD_LUCI=true
       - CPU_COUNT=4
       - RAM_COUNT=4096
