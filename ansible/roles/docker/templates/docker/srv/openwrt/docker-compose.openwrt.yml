@@ -10,7 +10,7 @@ services:
       - TZ=America/Los_Angeles
       - PUID=1001
       - PGID=1001
-      - WAN_IF={{ openwrt_wan_interface }}
+      - WAN_IF=enx00e04c0407a6
       - LAN_IF=veth
       # - WAN_IF=eth0
       # - LAN_IF=eth1
