@@ -10,7 +10,7 @@ services:
       - TZ=America/Los_Angeles
       - PUID=1001
       - PGID=1001
-      - WAN_IF=enx00e04c0407a6
+      - WAN_IF=enx2ccf67fb401c
       - LAN_IF=veth
       # - WAN_IF=eth0
       # - LAN_IF=eth1
@@ -31,7 +31,7 @@ services:
     pid: "host"
     privileged: true
     volumes:
-      - /dev:/dev
+      - /dev:/dev/
       - data:/storage/
 
 volumes:
