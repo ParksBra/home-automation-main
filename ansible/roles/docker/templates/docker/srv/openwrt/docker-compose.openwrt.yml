@@ -10,8 +10,8 @@ services:
       - TZ=America/Los_Angeles
       - PUID=1001
       - PGID=1001
-      - WAN_IF=docker_openwrt_wan
-      - LAN_IF=docker_openwrt_lan
+      - WAN_IF=enx02420596eb50
+      - LAN_IF=enx02420596eb75
       # - WAN_IF=eth0
       # - LAN_IF=eth1
       # - PCI_1=0001:01:00.0
@@ -21,8 +21,10 @@ services:
       - RAM_COUNT=4096
       - IMAGE_SIZE_ON_INIT=16384
     networks:
-      - openwrt_wan
-      - openwrt_lan
+      openwrt_wan:
+        mac_address: 02:42:05:96:eb:50
+      openwrt_lan:
+        mac_address: 02:42:05:96:eb:75
     devices:
       - /dev/kvm
     device_cgroup_rules:
