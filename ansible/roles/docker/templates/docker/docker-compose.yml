@@ -1,6 +1,5 @@
 include:
   - path: 'network/docker-compose.network.yml'
-  - path: 'srv/swag/docker-compose.swag.yml'
-  - path: 'srv/homeassistant/docker-compose.homeassistant.yml'
-  - path: 'srv/nut-upsd/docker-compose.nut-upsd.yml'
-  - path: 'srv/zigbee2mqtt/docker-compose.zigbee2mqtt.yml'
+  {% for service_name in docker_services if service_name in group_names %}
+  - path: 'srv/{{ service_name }}/docker-compose.{{ service_name }}.yml'
+  {% endfor %}
