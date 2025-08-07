@@ -10,8 +10,8 @@ services:
       - TZ=America/Los_Angeles
       - PUID=1001
       - PGID=1001
-      - WAN_IF=host
-      - LAN_IF=veth
+      - WAN_IF=docker_openwrt_wan
+      - LAN_IF=docker_openwrt_lan
       # - WAN_IF=eth0
       # - LAN_IF=eth1
       # - PCI_1=0001:01:00.0
@@ -50,3 +50,4 @@ networks:
     driver_opts:
       parent: eth1
       priority: 900
+    
