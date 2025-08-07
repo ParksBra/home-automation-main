@@ -17,6 +17,6 @@ services:
       - /dev/ttyUSB0:/dev/ttyUSB0
     networks:
       - homeassistant_backend
-      - swag_frontend
-      - zigbee2mqtt_homeassistant
-      - homeassistant_nut-upsd
+      - homeassistant_swag
+      - homeassistant_zigbee2mqtt
+      - homeassistant_nut_upsd

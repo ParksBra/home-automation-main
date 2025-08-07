@@ -13,6 +13,6 @@ services:
       - PUID=1001
       - PGID=1001
     networks:
-      - zigbee2mqtt_homeassistant
+      - homeassistant_zigbee2mqtt
     healthcheck:
       test: ['CMD', 'curl', '0.0.0.0:1883']

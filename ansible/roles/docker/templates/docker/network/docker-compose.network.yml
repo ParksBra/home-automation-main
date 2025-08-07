@@ -1,11 +1,11 @@
 networks:
   homeassistant_backend:
     driver: bridge
-  swag_frontend:
+  homeassistant_swag:
     driver: bridge
-  zigbee2mqtt_homeassistant:
+  homeassistant_zigbee2mqtt:
     driver: bridge
-  homeassistant_nut-upsd:
+  homeassistant_nut_upsd:
     driver: bridge
   openwrt:
     driver: bridge

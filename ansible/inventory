@@ -6,7 +6,7 @@ lilman ansible_host=192.168.48.76
 [homeassistant]
 lilguy-rpi5-0
 
-[nut-upsd]
+[nut_upsd]
 lilguy-rpi5-0
 
 [swag]

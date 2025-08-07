@@ -1,7 +1,7 @@
 services:
-  nut-upsd:
+  nut_upsd:
     image: instantlinux/nut-upsd
-    container_name: nut-upsd
+    container_name: nut_upsd
     environment:
       - PUID=1001
       - PGID=1001
@@ -19,4 +19,4 @@ services:
       - "{{ nut_upsd_config_path }}:/config"
     restart: always
     networks:
-      - homeassistant_nut-upsd
+      - homeassistant_nut_upsd
