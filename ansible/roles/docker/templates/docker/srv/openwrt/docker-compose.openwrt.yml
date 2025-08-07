@@ -10,10 +10,10 @@ services:
       - TZ=America/Los_Angeles
       - PUID=1001
       - PGID=1001
-      # - WAN_IF={{ openwrt_wan_interface }}
-      # - LAN_IF={{ openwrt_lan_interface }}
-      - WAN_IF=eth0
-      - LAN_IF=eth1
+      - WAN_IF={{ openwrt_wan_interface }}
+      - LAN_IF=veth
+      # - WAN_IF=eth0
+      # - LAN_IF=eth1
       # - PCI_1=0001:01:00.0
       # - PCI_2=0002:01:00.0
       - FORWARD_LUCI=true
@@ -31,7 +31,7 @@ services:
     pid: "host"
     privileged: true
     volumes:
-      - /dev:/dev/
+      - /dev:/dev
       - data:/storage/
 
 volumes:
