@@ -14,7 +14,7 @@ services:
       - LAN_IF=veth
       # - WAN_IF=eth0
       # - LAN_IF=eth1
-      - PCI_1=0001:01:00.0
+      # - PCI_1=0001:01:00.0
       # - PCI_2=0002:01:00.0
       - FORWARD_LUCI=true
       - CPU_COUNT=4
