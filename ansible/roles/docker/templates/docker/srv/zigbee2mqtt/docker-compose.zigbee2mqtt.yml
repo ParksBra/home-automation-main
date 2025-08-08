@@ -6,6 +6,8 @@ services:
     volumes:
       - "{{ zigbee2mqtt_config_path }}:/config"
       - /run/udev:/run/udev:ro
+    devices:
+      - /dev/ttyUSB0:/dev/ttyUSB0
     ports:
       - 8234:8080
     environment:
