@@ -1,7 +1,7 @@
 [all]
 lilguy-rpi5-0 ansible_host=lilguy-rpi5-0.local
 # lilguy-rpi5-1 ansible_host=lilguy-rpi5-1.local
-# lilman ansible_host=lilman.local
+lilman ansible_host=lilman.local
 
 [homeassistant]
 lilguy-rpi5-0
