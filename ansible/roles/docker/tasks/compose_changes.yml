@@ -3,6 +3,10 @@
     force_container_recreate: 'false'
   when: force_container_recreate is not defined
 
+- name: display force_container_recreate
+  ansible.builtin.debug:
+    msg: "force_container_recreate is set to {{ force_container_recreate }}"
+
 - name: run general docker compose
   community.docker.docker_compose_v2:
     pull: always
