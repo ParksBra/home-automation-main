@@ -20,3 +20,4 @@ services:
       - homeassistant_swag
       - homeassistant_zigbee2mqtt
       - homeassistant_nut_upsd
+      - mqtt5_connection

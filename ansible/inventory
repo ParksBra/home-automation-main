@@ -15,5 +15,8 @@ lilguy-rpi5-0
 [zigbee2mqtt]
 lilguy-rpi5-0
 
+[mqtt5]
+lilguy-rpi5-0
+
 [openwrt]
 lilman

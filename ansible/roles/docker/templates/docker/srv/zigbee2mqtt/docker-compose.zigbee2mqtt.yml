@@ -16,5 +16,6 @@ services:
       - PGID=1001
     networks:
       - homeassistant_zigbee2mqtt
+      - mqtt5_connection
     healthcheck:
       test: ['CMD', 'curl', '0.0.0.0:1883']
