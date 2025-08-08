@@ -2,10 +2,10 @@ services:
   zigbee2mqtt:
     container_name: zigbee2mqtt
     image: ghcr.io/koenkk/zigbee2mqtt
-    restart: always
+    restart: unless-stopped
     volumes:
-      - "{{ zigbee2mqtt_config_path }}:/app/data"
-      - /run/udev:/run/udev:ro
+      - "{{ zigbee2mqtt_config_path }}:/app/data:rw"
+      - "/run/udev:/run/udev:ro"
     devices:
       - /dev/ttyUSB0:/dev/ttyUSB0
     ports:

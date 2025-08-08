@@ -9,9 +9,9 @@ services:
     ports:
       - 9001:9001
     volumes:
-      - "{{ mqtt5_config_path }}:/mosquitto/config"
-      - "{{ mqtt5_data_path }}:/mosquitto/data"
-      - "{{ mqtt5_log_path }}:/mosquitto/log"
+      - "{{ mqtt5_config_path }}:/mosquitto/config:rw"
+      - "{{ mqtt5_data_path }}:/mosquitto/data:rw"
+      - "{{ mqtt5_log_path }}:/mosquitto/log:rw"
     networks:
       - mqtt5_connection
     restart: unless-stopped

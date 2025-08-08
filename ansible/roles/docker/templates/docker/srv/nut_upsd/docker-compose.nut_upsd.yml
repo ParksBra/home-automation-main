@@ -16,7 +16,7 @@ services:
     healthcheck:
       test: ['CMD', 'curl', '0.0.0.0:3493']
     volumes:
-      - "{{ nut_upsd_config_path }}:/config"
-    restart: always
+      - "{{ nut_upsd_config_path }}:/config:rw"
+    restart: unless-stopped
     networks:
       - homeassistant_nut_upsd

@@ -10,9 +10,9 @@ services:
     healthcheck:
       test: ['CMD', 'curl', '0.0.0.0:8123/manifest.json']
     volumes:
-      - "{{ homeassistant_config_path }}:/config"
+      - "{{ homeassistant_config_path }}:/config:rw"
       - /run/dbus:/run/dbus:ro
-    restart: always
+    restart: unless-stopped
     # devices:
       # - /dev/ttyUSB0:/dev/ttyUSB0
     networks:

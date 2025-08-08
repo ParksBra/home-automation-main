@@ -2,7 +2,7 @@ services:
   openwrt:
     container_name: openwrt
     image: albrechtloh/openwrt-docker
-    restart: always
+    restart: unless-stopped
     ports:
       - 8006:8006
       # - 8000:8000
@@ -30,8 +30,8 @@ services:
     pid: "host"
     privileged: true
     volumes:
-      - /dev:/dev/
-      - data:/storage/
+      - "/dev:/dev/:rw"
+      - "data:/storage/:rw"
 
 
 volumes:

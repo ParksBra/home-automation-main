@@ -13,11 +13,11 @@ services:
             - SUBDOMAINS={{ homeassistant_subdomain }}
             - DNSPLUGIN=cloudflare
         volumes:
-            - "{{ swag_config_path }}:/config"
+            - "{{ swag_config_path }}:/config:rw"
         ports:
             - "{{ swag_external_port }}:{{ swag_external_port }}"
             - "{{ swag_internal_port }}:{{ swag_internal_port }}"
-        restart: always
+        restart: unless-stopped
         healthcheck:
             test: ['CMD', 'curl', 'https://{{ homeassistant_subdomain }}.{{ swag_domain }}:{{ swag_external_port }}/manifest.json']
         networks:
