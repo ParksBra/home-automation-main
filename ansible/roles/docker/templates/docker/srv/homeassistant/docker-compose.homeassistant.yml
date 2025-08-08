@@ -13,8 +13,8 @@ services:
       - "{{ homeassistant_config_path }}:/config:rw"
       - /run/dbus:/run/dbus:ro
     restart: unless-stopped
-    devices:
-      - /dev/ttyUSB0:/dev/ttyUSB0
+    # devices:
+    #   - /dev/ttyUSB0:/dev/ttyUSB0
     networks:
       - homeassistant_backend
       - homeassistant_swag
