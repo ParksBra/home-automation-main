@@ -4,7 +4,7 @@ services:
     image: ghcr.io/koenkk/zigbee2mqtt
     restart: always
     volumes:
-      - "{{ zigbee2mqtt_config_path }}:/config"
+      - "{{ zigbee2mqtt_config_path }}:/app/data"
       - /run/udev:/run/udev:ro
     devices:
       - /dev/ttyUSB0:/dev/ttyUSB0
