@@ -8,8 +8,8 @@ services:
     environment:
       - AUTOHEAL_CONTAINER_LABEL=all
     restart: always
-  {% endif %}
 
+  {% endif %}
   homeassistant:
     image: lscr.io/linuxserver/homeassistant
     container_name: homeassistant
@@ -19,7 +19,11 @@ services:
       - "PGID={{ docker_gid }}"
       - "DISABLE_JEMALLOC=true"
     healthcheck:
-      test: ['CMD', 'curl', '0.0.0.0:8123/manifest.json']
+      test: ['CMD-SHELL', 'wget --no-verbose --tries=1 --spider http://0.0.0.0:8123/manifest.json || exit 1']
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
     volumes:
       - "{{ homeassistant_mount_path }}:/config:rw"
       - /run/dbus:/run/dbus:ro
@@ -51,8 +55,8 @@ services:
       - "autoheal=true"
     {% endif %}
     restart: unless-stopped
-    healthcheck:
-      test: ['CMD', 'curl', '0.0.0.0:1883']
+    # healthcheck:
+    #   test: ['CMD-SHELL', 'wget --no-verbose --tries=1 --spider http://0.0.0.0:1883/ || exit 1']
 
   zigbee2mqtt:
     container_name: zigbee2mqtt
@@ -90,6 +94,10 @@ services:
     {% endif %}
     healthcheck:
       test: ["CMD-SHELL", "wget --no-verbose --tries=1 --spider http://localhost:8080/ || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
 
   govee2mqtt:
     image: ghcr.io/wez/govee2mqtt:latest
@@ -107,8 +115,9 @@ services:
       - "RUST_LOG_STYLE=always"
       - "GOVEE_MQTT_HOST=mqtt"
       - "GOVEE_MQTT_PORT=1883"
-    network_mode: host
+      - "COLORBT_SHOW_HIDDEN=1"
     networks:
+      - govee2mqtt_host
       - homeassistant_govee2mqtt
       - mqtt_connection
 
@@ -116,29 +125,35 @@ services:
     image: ghcr.io/linuxserver/swag
     container_name: swag
     cap_add:
-        - NET_ADMIN
+      - NET_ADMIN
     environment:
-        - "PUID={{ docker_uid }}"
-        - "PGID={{ docker_gid }}"
-        - "TZ={{ timezone }}"
-        - "URL={{ swag_domain }}"
-        - "VALIDATION={{ swag_validation_method }}"
-        - "SUBDOMAINS={{ homeassistant_subdomain }}"
-        - "DNSPLUGIN={{ swag_dns_plugin }}"
+      - "PUID={{ docker_uid }}"
+      - "PGID={{ docker_gid }}"
+      - "TZ={{ timezone }}"
+      - "URL={{ swag_domain }}"
+      - "SUBDOMAINS={{ swag_domains | join(',') }}"
+      - "VALIDATION={{ swag_validation_method }}"
+      - "SUBDOMAINS={{ homeassistant_subdomain }}"
+      - "DNSPLUGIN={{ swag_dns_plugin }}"
+      - "EMAIL={{ swag_letsencrypt_email }}"
     volumes:
-        - "{{ swag_mount_path }}:/config:rw"
+      - "{{ swag_mount_path }}:/config:rw"
     ports:
-        - "{{ swag_homeassistant_external_port }}:{{ swag_homeassistant_external_port }}"
-        - "{{ swag_homeassistant_internal_port }}:{{ swag_homeassistant_internal_port }}"
+      - "{{ swag_homeassistant_external_port }}:{{ swag_homeassistant_external_port }}"
+      - "{{ swag_homeassistant_internal_port }}:{{ swag_homeassistant_internal_port }}"
     restart: unless-stopped
     labels:
     {% if docker_enable_autoheal %}
       - "autoheal=true"
     {% endif %}
     healthcheck:
-        test: ['CMD', 'curl', 'https://{{ homeassistant_subdomain }}.{{ swag_domain }}:{{ swag_homeassistant_external_port }}/manifest.json']
+      test: ['CMD-SHELL', 'wget --no-verbose --tries=1 --spider https://{{ homeassistant_subdomain }}.{{ swag_domain }}:{{ swag_homeassistant_external_port }}/manifest.json || exit 1']
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
     networks:
-        - homeassistant_swag
+      - homeassistant_swag
 
 networks:
   homeassistant_backend:
@@ -149,5 +164,14 @@ networks:
     driver: bridge
   homeassistant_govee2mqtt:
     driver: bridge
+  govee2mqtt_host:
+    driver: macvlan
+    driver_opts:
+      parent: eth0
+    ipam:
+      config:
+        - subnet: {{ local_lan_cidr }}
+          gateway: {{ local_lan_default_gateway }}
+          ip_range: {{ govee2mqtt_ip_range_cidr }}
   mqtt_connection:
     driver: bridge
