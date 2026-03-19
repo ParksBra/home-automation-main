@@ -1,0 +1,43 @@
+- name: install nut_upsd components
+  apt:
+    name: nut-server
+    state: present
+  with_items:
+    - nut
+    - nut-server
+    - nut-client
+    - usbutils
+  become: true
+  become_user: root
+
+- name: apply configurations for nut_upsd
+  template:
+    src: "{{ item }}.j2"
+    dest: "/etc/nut/{{ item }}"
+    owner: root
+    group: root
+    mode: '0640'
+    backup: true
+  notify: restart_nut_upsd
+  become: true
+  become_user: root
+  with_items:
+    - nut.conf
+    - upsd.conf
+    - upsd.users
+    - ups.conf
+    - upsmon.conf
+
+- name: flush handlers
+  meta: flush_handlers
+
+- name: ensure nut_upsd is enabled and started
+  service:
+    name: "{{ item }}"
+    state: started
+    enabled: true
+  with_items:
+    - nut-server
+    - nut-client
+  become: true
+  become_user: root

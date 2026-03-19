@@ -1,2 +1,28 @@
-- name: Configure Home Assistant
-  include_tasks: configure_homeassistant.yml
+- name: ensure path exists
+  file:
+    name: "{{ homeassistant_config_path }}"
+    state: directory
+    owner: "{{ service_user }}"
+    group: "{{ service_group }}"
+    recurse: true
+
+- name: ensure all sub-config files exist
+  file:
+    name: "{{ homeassistant_config_path }}/{{ item }}s.yaml"
+    state: touch
+    owner: "{{ service_user }}"
+    group: "{{ service_group }}"
+  with_items: "{{ homeassistant_enabled_configurations }}"
+
+- name: copy primary configuration
+  template:
+    src: "configuration.yml.j2"
+    dest: "{{ homeassistant_config_path }}/configuration.yaml"
+    owner: "{{ service_user }}"
+    group: "{{ service_group }}"
+    mode: '664'
+    backup: true
+  notify: restart_homeassistant
+
+- name: flush handlers
+  meta: flush_handlers

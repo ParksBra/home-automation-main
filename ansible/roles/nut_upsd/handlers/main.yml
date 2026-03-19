@@ -1,0 +1,9 @@
+- name: restart_nut_upsd
+  service:
+    name: "{{ item }}"
+    state: restarted
+  with_items:
+    - nut-server
+    - nut-client
+  become: true
+  become_user: root

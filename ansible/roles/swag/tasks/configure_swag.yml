@@ -6,12 +6,27 @@
     group: "{{ service_group }}"
     recurse: true
 
-- name: configure swag ha subdomain
+- name: configure swag dns plugin
   template:
-    src: "nginx/proxy-confs/homeassistant.subdomain.j2.conf"
-    dest: "{{ swag_config_path }}/nginx/proxy-confs/homeassistant.subdomain.conf"
+    src: "dns-conf/{{ swag_dns_plugin }}.ini.j2"
+    dest: "{{ swag_config_path }}/{{ swag_dns_plugin }}.ini"
+    owner: "{{ service_user }}"
+    group: "{{ service_group }}"
+    mode: '660'
+    backup: true
+  notify: restart_swag
+
+- name: configure swag subdomains
+  template:
+    src: "{{ item }}"
+    dest: "{{ swag_config_path }}/nginx/proxy-confs/{{ item | basename | regex_replace('\\.j2$', '') }}"
     owner: "{{ service_user }}"
     group: "{{ service_group }}"
     mode: '664'
     backup: true
+  with_fileglob:
+    - "{{ role_path }}/templates/nginx/proxy-confs/*.j2*"
   notify: restart_swag
+
+- name: flush handlers
+  meta: flush_handlers

@@ -1,5 +1,0 @@
-include:
-  - path: 'network/docker-compose.network.yml'
-{% for service_name in docker_services if service_name in group_names %}
-  - path: 'srv/{{ service_name }}/docker-compose.{{ service_name }}.yml'
-{% endfor %}

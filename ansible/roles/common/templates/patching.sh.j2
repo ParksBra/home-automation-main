@@ -1,0 +1,17 @@
+# Update host
+apt update -y
+apt full-upgrade -y
+
+# Update Docker images and restart containers
+cd {{ docker_compose_path }}
+docker compose pull # Update current images
+docker compose up -d --force-recreate --remove-orphans # Apply updated images
+echo "Cleaning old orphaned images in 15 seconds..."
+sleep 15
+docker image prune -af # Clean up old images
+
+# Reboot to apply any necessary system updates
+echo "Update complete. Rebooting to apply any necessary system updates."
+echo "Rebooting in 5 seconds..."
+sleep 5
+shutdown -r now

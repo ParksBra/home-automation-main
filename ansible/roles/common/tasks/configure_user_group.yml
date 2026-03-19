@@ -2,7 +2,7 @@
   group:
     name: "{{ service_group }}"
     state: present
-    gid: 1001
+    gid: "{{ service_gid }}"
   become: true
   become_user: root
 
@@ -14,25 +14,6 @@
     create_home: true
     home: "/home/{{ service_user }}"
     state: present
-    uid: 1001
-    
-  become: true
-  become_user: root
-
-- name: create ansible group
-  group:
-    name: "{{ ansible_group }}"
-    state: present
-  become: true
-  become_user: root
-
-- name: create ansible user
-  user:
-    name: "{{ ansible_user }}"
-    group: "{{ ansible_group }}"
-    shell: /bin/bash
-    create_home: true
-    home: "/home/{{ ansible_user }}"
-    state: present
+    uid: "{{ service_uid }}"
   become: true
   become_user: root

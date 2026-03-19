@@ -2,5 +2,9 @@
 - hosts: all
   roles:
     - common
+    - docker
+    - nut_upsd
+    - homeassistant
+    - swag
   become: true
   become_user: root
