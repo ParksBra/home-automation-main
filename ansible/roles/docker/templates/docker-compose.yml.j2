@@ -1,5 +1,5 @@
 services:
-  {% if docker_enable_autoheal %}
+{% if docker_enable_autoheal %}
   autoheal:
     image: willfarrell/autoheal
     container_name: autoheal
@@ -9,7 +9,7 @@ services:
       - AUTOHEAL_CONTAINER_LABEL=all
     restart: always
 
-  {% endif %}
+{% endif %}
   homeassistant:
     image: lscr.io/linuxserver/homeassistant
     container_name: homeassistant
@@ -29,9 +29,9 @@ services:
       - /run/dbus:/run/dbus:ro
     restart: unless-stopped
     labels:
-    {% if docker_enable_autoheal %}
+{% if docker_enable_autoheal %}
       - "autoheal=true"
-    {% endif %}
+{% endif %}
     networks:
       - homeassistant_backend
       - homeassistant_swag
@@ -51,9 +51,9 @@ services:
     networks:
       - mqtt_connection
     labels:
-    {% if docker_enable_autoheal %}
+{% if docker_enable_autoheal %}
       - "autoheal=true"
-    {% endif %}
+{% endif %}
     restart: unless-stopped
     # healthcheck:
     #   test: ['CMD-SHELL', 'wget --no-verbose --tries=1 --spider http://0.0.0.0:1883/ || exit 1']
@@ -89,9 +89,9 @@ services:
       - homeassistant_zigbee2mqtt
       - mqtt_connection
     labels:
-    {% if docker_enable_autoheal %}
+{% if docker_enable_autoheal %}
       - "autoheal=true"
-    {% endif %}
+{% endif %}
     healthcheck:
       test: ["CMD-SHELL", "wget --no-verbose --tries=1 --spider http://localhost:8080/ || exit 1"]
       interval: 30s
@@ -133,7 +133,6 @@ services:
       - "URL={{ swag_domain }}"
       - "SUBDOMAINS={{ swag_domains | join(',') }}"
       - "VALIDATION={{ swag_validation_method }}"
-      - "SUBDOMAINS={{ homeassistant_subdomain }}"
       - "DNSPLUGIN=cloudflare"
       - "EMAIL={{ swag_letsencrypt_email }}"
     volumes:
@@ -143,9 +142,9 @@ services:
       - "{{ swag_homeassistant_internal_port }}:{{ swag_homeassistant_internal_port }}"
     restart: unless-stopped
     labels:
-    {% if docker_enable_autoheal %}
+{% if docker_enable_autoheal %}
       - "autoheal=true"
-    {% endif %}
+{% endif %}
     healthcheck:
       test: ['CMD-SHELL', 'wget --no-verbose --tries=1 --spider https://{{ homeassistant_subdomain }}.{{ swag_domain }}:{{ swag_homeassistant_external_port }}/manifest.json || exit 1']
       interval: 30s

@@ -13,9 +13,9 @@ http:
   login_attempts_threshold: {{ homeassistant_ip_ban_threshold }}
   use_x_forwarded_for: true
   trusted_proxies:
-    {% for proxy in homeassistant_trusted_proxies %}
+{% for proxy in homeassistant_trusted_proxies %}
     - {{ proxy }}
-    {% endfor %}
+{% endfor %}
 
 {% if homeassistant_enable_mobile_app %}
 mobile_app:
