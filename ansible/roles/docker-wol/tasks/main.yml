@@ -1,13 +1,13 @@
 - name: Create the named pipe for wol
   command:
-    cmd: mkfifo /home/docker/homeassistant/data/wolpipe
-    creates: /home/docker/homeassistant/data/wolpipe
+    cmd: "mkfifo {{ homeassistant_mount_path }}/wolpipe"
+    creates: "{{ homeassistant_mount_path }}/wolpipe"
   become: true
   become_user: root
 
 - name: Ensure the pipe has the correct permissions
   file:
-    path: /home/docker/homeassistant/data/wolpipe
+    path: "{{ homeassistant_mount_path }}/wolpipe"
     owner: "{{ service_user }}"
     group: "{{ service_group }}"
     mode: '0644'
