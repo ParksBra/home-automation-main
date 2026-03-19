@@ -88,6 +88,7 @@ services:
     networks:
       - homeassistant_zigbee2mqtt
       - mqtt_connection
+      - homeassistant_swag
     labels:
 {% if docker_enable_autoheal %}
       - "autoheal=true"
