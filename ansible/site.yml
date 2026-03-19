@@ -1,5 +1,6 @@
 ---
-- hosts: all
+- name: Complete setup and configuration
+  hosts: all
   roles:
     - common
     - docker

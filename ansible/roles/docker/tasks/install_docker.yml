@@ -1,21 +1,21 @@
-- name: check if docker is installed
-  command: docker --version
+- name: Check if docker is installed
+  ansible.builtin.command: docker --version
   register: docker_version
   ignore_errors: true
 
-- name: install docker script
-  shell:
+- name: Install docker script
+  ansible.builtin.shell:
     cmd: "sudo curl -sSL https://get.docker.com | sh"
     creates: /usr/bin/docker
   become: true
   become_user: "{{ ansible_user }}"
   when: docker_version.rc != 0
 
-- name: configure docker service
-  service:
+- name: Configure docker service
+  ansible.builtin.service:
     name: docker
     enabled: true
     state: started
 
-- name: configure docker
-  include_tasks: "configure_docker.yml"
+- name: Configure docker
+  ansible.builtin.include_tasks: "configure_docker.yml"

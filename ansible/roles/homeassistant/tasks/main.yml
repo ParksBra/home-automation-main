@@ -1,21 +1,21 @@
-- name: ensure path exists
-  file:
+- name: Ensure path exists
+  ansible.builtin.file:
     name: "{{ homeassistant_mount_path }}"
     state: directory
     owner: "{{ service_user }}"
     group: "{{ service_group }}"
     recurse: true
 
-- name: ensure all sub-config files exist
-  file:
+- name: Ensure all sub-config files exist
+  ansible.builtin.file:
     name: "{{ homeassistant_mount_path }}/{{ item }}s.yaml"
     state: touch
     owner: "{{ service_user }}"
     group: "{{ service_group }}"
   with_items: "{{ homeassistant_enabled_configurations }}"
 
-- name: copy primary configuration
-  template:
+- name: Copy primary configuration
+  ansible.builtin.template:
     src: "configuration.yml.j2"
     dest: "{{ homeassistant_mount_path }}/configuration.yaml"
     owner: "{{ service_user }}"
@@ -24,5 +24,5 @@
     backup: true
   notify: restart_homeassistant
 
-- name: flush handlers
-  meta: flush_handlers
+- name: Flush handlers
+  ansible.builtin.meta: flush_handlers

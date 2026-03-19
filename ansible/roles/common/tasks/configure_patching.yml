@@ -1,5 +1,5 @@
 - name: Copy patching script to root home directory
-  template:
+  ansible.builtin.template:
     src: "patching.sh.j2"
     dest: "{{ patching_script_path }}"
     owner: root
@@ -9,7 +9,7 @@
   become_user: root
 
 - name: Configure patching cron job
-  cron:
+  ansible.builtin.cron:
     name: "automatic_patching"
     minute: "{{ patching_cron[0] }}"
     hour: "{{ patching_cron[1] }}"

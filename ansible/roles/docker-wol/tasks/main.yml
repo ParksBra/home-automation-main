@@ -1,12 +1,12 @@
 - name: Create the named pipe for wol
-  command:
+  ansible.builtin.command:
     cmd: "mkfifo {{ homeassistant_mount_path }}/wolpipe"
     creates: "{{ homeassistant_mount_path }}/wolpipe"
   become: true
   become_user: root
 
 - name: Ensure the pipe has the correct permissions
-  file:
+  ansible.builtin.file:
     path: "{{ homeassistant_mount_path }}/wolpipe"
     owner: "{{ service_user }}"
     group: "{{ service_group }}"
@@ -15,7 +15,7 @@
   become_user: root
 
 - name: Create systemd service for wol
-  template:
+  ansible.builtin.template:
     src: "docker-wol.service.j2"
     dest: "/etc/systemd/system/docker-wol.service"
     owner: root
@@ -25,7 +25,7 @@
   become_user: root
 
 - name: Enable and start the wol service
-  systemd:
+  ansible.builtin.systemd_service:
     name: docker-wol.service
     enabled: true
     state: started

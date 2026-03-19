@@ -1,6 +1,7 @@
-- name: restart_homeassistant
+- name: Restart Home Assistant
   community.docker.docker_container:
     name: homeassistant
     restart: true
   become: true
   become_user: root
+  listen: restart_homeassistant

@@ -1,5 +1,5 @@
-- name: restart_nut_upsd
-  service:
+- name: Restart nut-server and nut-client
+  ansible.builtin.service:
     name: "{{ item }}"
     state: restarted
   with_items:
@@ -7,3 +7,4 @@
     - nut-client
   become: true
   become_user: root
+  listen: restart_nut_upsd

@@ -1,5 +1,5 @@
-- name: install and configure docker
-  include_tasks: install_docker.yml
+- name: Install and configure docker
+  ansible.builtin.include_tasks: install_docker.yml
 
-- name: apply changes via docker compose
-  include_tasks: compose_changes.yml
+- name: Apply changes via docker compose
+  ansible.builtin.include_tasks: compose_changes.yml

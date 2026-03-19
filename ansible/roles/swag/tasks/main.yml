@@ -1,5 +1,5 @@
-- name: ensure path exists
-  file:
+- name: Ensure path exists
+  ansible.builtin.file:
     name: "{{ item }}"
     state: directory
     owner: "{{ service_user }}"
@@ -10,8 +10,8 @@
     - "{{ swag_mount_path }}/dns-conf"
     - "{{ swag_mount_path }}/etc/letsencrypt"
 
-- name: configure swag cloudflare dns plugin
-  template:
+- name: Configure SWAG Cloudflare DNS plugin
+  ansible.builtin.template:
     src: "dns-conf/cloudflare.ini.j2"
     dest: "{{ swag_mount_path }}/cloudflare.ini"
     owner: "{{ service_user }}"
@@ -21,8 +21,8 @@
   notify: restart_swag
   no_log: "{{ not debug }}"
 
-- name: configure swag letsencrypt
-  template:
+- name: Configure SWAG Let's Encrypt
+  ansible.builtin.template:
     src: "etc/letsencrypt/cli.ini.j2"
     dest: "{{ swag_mount_path }}/cli.ini"
     owner: "{{ service_user }}"
@@ -32,8 +32,8 @@
   notify: restart_swag
   no_log: "{{ not debug }}"
 
-- name: configure swag subdomains
-  template:
+- name: Configure SWAG subdomains
+  ansible.builtin.template:
     src: "{{ item }}"
     dest: "{{ swag_mount_path }}/nginx/proxy-confs/{{ item | basename | regex_replace('\\.j2$', '') }}"
     owner: "{{ service_user }}"
@@ -44,5 +44,5 @@
     - "{{ role_path }}/templates/nginx/proxy-confs/*.j2*"
   notify: restart_swag
 
-- name: flush handlers
-  meta: flush_handlers
+- name: Flush handlers
+  ansible.builtin.meta: flush_handlers
