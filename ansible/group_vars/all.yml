@@ -21,7 +21,9 @@ timezone: "America/Los_Angeles"
 
 home_path: "/home/{{ service_user }}"
 ansible_home_path: "/home/{{ ansible_user }}"
+
 docker_compose_path: "{{ ansible_home_path }}/docker"
+docker_compose_force_recreate: "{{ lookup('env', 'DOCKER_FORCE_CONTAINER_RECREATION') | default(false) | bool }}"
 
 enable_autoheal: true
 

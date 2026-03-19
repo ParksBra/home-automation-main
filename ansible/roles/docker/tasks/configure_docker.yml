@@ -16,4 +16,3 @@
     group: "{{ ansible_group }}"
   with_filetree: ../templates/docker
   when: item.state == 'file'
-  
