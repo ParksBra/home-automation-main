@@ -15,8 +15,8 @@ services:
     container_name: homeassistant
     environment:
       - "TZ={{ timezone }}"
-      - "PUID={{ docker_uid }}"
-      - "PGID={{ docker_gid }}"
+      - "PUID={{ service_uid }}"
+      - "PGID={{ service_gid }}"
       - "DISABLE_JEMALLOC=true"
     healthcheck:
       test: ['CMD-SHELL', 'wget --no-verbose --tries=1 --spider http://0.0.0.0:8123/manifest.json || exit 1']
@@ -42,8 +42,8 @@ services:
     container_name: mqtt
     environment:
       - "TZ={{ timezone }}"
-      - "PUID={{ docker_uid }}"
-      - "PGID={{ docker_gid }}"
+      - "PUID={{ service_uid }}"
+      - "PGID={{ service_gid }}"
     ports:
       - 9001:9001
     volumes:
@@ -73,8 +73,8 @@ services:
       - "{{ zigbee2mqtt_frontend_port }}:8080"
     environment:
       - "TZ={{ timezone }}"
-      - "PUID={{ docker_uid }}"
-      - "PGID={{ docker_gid }}"
+      - "PUID={{ service_uid }}"
+      - "PGID={{ service_gid }}"
       - "ZIGBEE2MQTT_CONFIG_MQTT_SERVER=mqtt://mqtt:1883"
       - "ZIGBEE2MQTT_CONFIG_MQTT_VERSION={{ mqtt_version }}"
       - "ZIGBEE2MQTT_CONFIG_MQTT_BASE_TOPIC={{ zigbee2mqtt_base_topic }}"
@@ -109,8 +109,8 @@ services:
       - "{{ govee2mqtt_mount_path }}:/data:rw"
     environment:
       - "TZ={{ timezone }}"
-      - "PUID={{ docker_uid }}"
-      - "PGID={{ docker_gid }}"
+      - "PUID={{ service_uid }}"
+      - "PGID={{ service_gid }}"
       - "GOVEE_TEMPERATURE_SCALE={{ govee2mqtt_temperature_scale }}"
       - "RUST_LOG_STYLE=always"
       - "GOVEE_MQTT_HOST=mqtt"
@@ -127,8 +127,8 @@ services:
     cap_add:
       - NET_ADMIN
     environment:
-      - "PUID={{ docker_uid }}"
-      - "PGID={{ docker_gid }}"
+      - "PUID={{ service_uid }}"
+      - "PGID={{ service_gid }}"
       - "TZ={{ timezone }}"
       - "URL={{ swag_domain }}"
       - "SUBDOMAINS={{ swag_domains | join(',') }}"
