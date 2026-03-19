@@ -32,5 +32,3 @@
     daemon_reload: true
   become: true
   become_user: root
-
-

@@ -1,7 +1,9 @@
 - name: Update apt
   ansible.builtin.apt:
-    update_cache: yes
-    upgrade: 'safe'
+    update_cache: true
+    autoclean: true
+    autoremove: true
+    upgrade: safe
     state: latest
 
 - name: Set hostname

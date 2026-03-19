@@ -6,8 +6,11 @@
 
 - name: Install docker script
   ansible.builtin.shell:
-    cmd: "sudo curl -sSL https://get.docker.com | sh"
+    cmd: |
+      set -o pipefail
+      sudo curl -sSL https://get.docker.com | sh
     creates: /usr/bin/docker
+    pipefail: true
   become: true
   become_user: "{{ ansible_user }}"
   when: docker_version.rc != 0

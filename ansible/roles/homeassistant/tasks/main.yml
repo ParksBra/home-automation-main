@@ -13,6 +13,7 @@
     state: touch
     owner: "{{ service_user }}"
     group: "{{ service_group }}"
+    mode: '664'
   with_items: "{{ homeassistant_enabled_configurations }}"
   changed_when: false
 

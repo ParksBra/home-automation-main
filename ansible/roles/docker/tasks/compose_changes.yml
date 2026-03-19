@@ -5,5 +5,5 @@
     assume_yes: true
     state: present
     build: always
-    recreate: "{{ 'always' if docker_compose_force_recreate else 'auto'}}"
+    recreate: "{{ 'always' if docker_compose_force_recreate else 'auto' }}"
     remove_orphans: true
