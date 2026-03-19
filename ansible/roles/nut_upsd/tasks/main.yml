@@ -27,6 +27,7 @@
     - upsd.users
     - ups.conf
     - upsmon.conf
+  no_log: "{{ not debug }}"
 
 - name: flush handlers
   meta: flush_handlers

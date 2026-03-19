@@ -19,6 +19,7 @@
     mode: '660'
     backup: true
   notify: restart_swag
+  no_log: "{{ not debug }}"
 
 - name: configure swag letsencrypt
   template:
@@ -29,6 +30,7 @@
     mode: '660'
     backup: true
   notify: restart_swag
+  no_log: "{{ not debug }}"
 
 - name: configure swag subdomains
   template:
