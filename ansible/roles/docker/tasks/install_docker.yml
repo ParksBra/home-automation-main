@@ -4,7 +4,9 @@
   ignore_errors: true
 
 - name: install docker script
-  shell: "sudo curl -sSL https://get.docker.com | sh"
+  shell:
+    cmd: "sudo curl -sSL https://get.docker.com | sh"
+    creates: /usr/bin/docker
   become: true
   become_user: "{{ ansible_user }}"
   when: docker_version.rc != 0
