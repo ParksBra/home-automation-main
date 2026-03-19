@@ -1,7 +1,7 @@
 debug: "{{ lookup('env', 'DEBUG') | default(false) | bool }}"
 
-ansible_user: "{{ ansible_user_id }}"
-ansible_group: "{{ ansible_user_id }}"
+ansible_user: "ansible"
+ansible_group: "ansible"
 
 patching_enabled: true
 patching_script_path: "/root/patching.sh"
