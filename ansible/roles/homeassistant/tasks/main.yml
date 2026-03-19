@@ -5,6 +5,7 @@
     owner: "{{ service_user }}"
     group: "{{ service_group }}"
     recurse: true
+  changed_when: false
 
 - name: Ensure all sub-config files exist
   ansible.builtin.file:
@@ -13,6 +14,7 @@
     owner: "{{ service_user }}"
     group: "{{ service_group }}"
   with_items: "{{ homeassistant_enabled_configurations }}"
+  changed_when: false
 
 - name: Copy primary configuration
   ansible.builtin.template:
