@@ -16,7 +16,7 @@
     dest: "{{ swag_mount_path }}/dns-conf/cloudflare.ini"
     owner: "{{ service_user }}"
     group: "{{ service_group }}"
-    mode: '660'
+    mode: '640'
     backup: true
   notify: restart_swag
   no_log: "{{ not debug }}"
@@ -27,7 +27,7 @@
     dest: "{{ swag_mount_path }}/etc/letsencrypt/cli.ini"
     owner: "{{ service_user }}"
     group: "{{ service_group }}"
-    mode: '660'
+    mode: '640'
     backup: true
   notify: restart_swag
   no_log: "{{ not debug }}"
@@ -38,7 +38,7 @@
     dest: "{{ swag_mount_path }}/nginx/proxy-confs/{{ item | basename | regex_replace('\\.j2$', '') }}"
     owner: "{{ service_user }}"
     group: "{{ service_group }}"
-    mode: '660'
+    mode: '640'
     backup: true
   with_fileglob:
     - "{{ role_path }}/templates/nginx/proxy-confs/*.j2*"
