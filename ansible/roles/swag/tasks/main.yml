@@ -13,7 +13,7 @@
 - name: Configure SWAG Cloudflare DNS plugin
   ansible.builtin.template:
     src: "dns-conf/cloudflare.ini.j2"
-    dest: "{{ swag_mount_path }}/cloudflare.ini"
+    dest: "{{ swag_mount_path }}/dns-conf/cloudflare.ini"
     owner: "{{ service_user }}"
     group: "{{ service_group }}"
     mode: '660'
@@ -24,7 +24,7 @@
 - name: Configure SWAG Let's Encrypt
   ansible.builtin.template:
     src: "etc/letsencrypt/cli.ini.j2"
-    dest: "{{ swag_mount_path }}/cli.ini"
+    dest: "{{ swag_mount_path }}/etc/letsencrypt/cli.ini"
     owner: "{{ service_user }}"
     group: "{{ service_group }}"
     mode: '660'
