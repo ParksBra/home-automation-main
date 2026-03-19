@@ -1,4 +1,6 @@
 - name: restart_homeassistant
-  shell: 'docker container restart homeassistant'
+  docker_container:
+    name: homeassistant
+    restart: true
   become: true
   become_user: root
