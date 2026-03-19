@@ -1,5 +1,5 @@
 - name: restart_swag
-  docker_container:
+  community.docker.docker_container:
     name: swag
     restart: true
   become: true
