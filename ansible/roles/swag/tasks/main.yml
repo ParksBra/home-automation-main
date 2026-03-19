@@ -6,14 +6,14 @@
     group: "{{ service_group }}"
     recurse: true
   with_items:
-    - "{{ swag_config_path }}/nginx/proxy-confs"
-    - "{{ swag_config_path }}/dns-conf"
-    - "{{ swag_config_path }}/etc/letsencrypt"
+    - "{{ swag_mount_path }}/nginx/proxy-confs"
+    - "{{ swag_mount_path }}/dns-conf"
+    - "{{ swag_mount_path }}/etc/letsencrypt"
 
 - name: configure swag cloudflare dns plugin
   template:
     src: "dns-conf/cloudflare.ini.j2"
-    dest: "{{ swag_config_path }}/cloudflare.ini"
+    dest: "{{ swag_mount_path }}/cloudflare.ini"
     owner: "{{ service_user }}"
     group: "{{ service_group }}"
     mode: '660'
@@ -24,7 +24,7 @@
 - name: configure swag letsencrypt
   template:
     src: "etc/letsencrypt/cli.ini.j2"
-    dest: "{{ swag_config_path }}/cli.ini"
+    dest: "{{ swag_mount_path }}/cli.ini"
     owner: "{{ service_user }}"
     group: "{{ service_group }}"
     mode: '660'
@@ -35,7 +35,7 @@
 - name: configure swag subdomains
   template:
     src: "{{ item }}"
-    dest: "{{ swag_config_path }}/nginx/proxy-confs/{{ item | basename | regex_replace('\\.j2$', '') }}"
+    dest: "{{ swag_mount_path }}/nginx/proxy-confs/{{ item | basename | regex_replace('\\.j2$', '') }}"
     owner: "{{ service_user }}"
     group: "{{ service_group }}"
     mode: '660'

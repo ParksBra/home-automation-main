@@ -1,6 +1,6 @@
 - name: ensure path exists
   file:
-    name: "{{ homeassistant_config_path }}"
+    name: "{{ homeassistant_mount_path }}"
     state: directory
     owner: "{{ service_user }}"
     group: "{{ service_group }}"
@@ -8,7 +8,7 @@
 
 - name: ensure all sub-config files exist
   file:
-    name: "{{ homeassistant_config_path }}/{{ item }}s.yaml"
+    name: "{{ homeassistant_mount_path }}/{{ item }}s.yaml"
     state: touch
     owner: "{{ service_user }}"
     group: "{{ service_group }}"
@@ -17,7 +17,7 @@
 - name: copy primary configuration
   template:
     src: "configuration.yml.j2"
-    dest: "{{ homeassistant_config_path }}/configuration.yaml"
+    dest: "{{ homeassistant_mount_path }}/configuration.yaml"
     owner: "{{ service_user }}"
     group: "{{ service_group }}"
     mode: '664'

@@ -126,7 +126,7 @@ services:
         - "SUBDOMAINS={{ homeassistant_subdomain }}"
         - "DNSPLUGIN={{ swag_dns_plugin }}"
     volumes:
-        - "{{ swag_config_path }}:/config:rw"
+        - "{{ swag_mount_path }}:/config:rw"
     ports:
         - "{{ swag_homeassistant_external_port }}:{{ swag_homeassistant_external_port }}"
         - "{{ swag_homeassistant_internal_port }}:{{ swag_homeassistant_internal_port }}"
