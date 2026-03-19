@@ -30,6 +30,7 @@ ansible_home_path: "/home/{{ ansible_user }}"
 docker_compose_path: "{{ ansible_home_path }}/docker"
 docker_compose_force_recreate: "{{ lookup('env', 'DOCKER_FORCE_CONTAINER_RECREATION') | default(false) | bool }}"
 docker_enable_autoheal: true
+docker_network_interface: "eth0"
 
 local_lan_cidr: "{{ lookup('env', 'LOCAL_LAN_CIDR') | default('192.168.0.0/16') }}"
 local_lan_default_gateway: "{{ lookup('env', 'LOCAL_LAN_DEFAULT_GATEWAY') | default('192.168.0.1') }}"

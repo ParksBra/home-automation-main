@@ -167,7 +167,7 @@ networks:
   govee2mqtt_host:
     driver: macvlan
     driver_opts:
-      parent: eth0
+      parent: {{ docker_network_interface }}
     ipam:
       config:
         - subnet: {{ local_lan_cidr }}
