@@ -31,8 +31,11 @@ swag_internal_cidr: "{{ lookup('env', 'SWAG_INTERNAL_CIDR') | default('192.168.0
 swag_domain: "{{ lookup('env', 'EXTERNAL_DOMAIN') | default('localhost') }}"
 swag_config_path: "{{ home_path }}/swag/data"
 swag_validation_method: "dns"
-swag_dns_plugin: "cloudflare"
 swag_cloudflare_api_token: "{{ lookup('env', 'SWAG_CLOUDFLARE_API_TOKEN') | default('token') }}"
+swag_letsencrypt_email: "{{ lookup('env', 'SWAG_LETSENCRYPT_EMAIL') | default('') }}"
+swag_domains:
+  - "{{ homeassistant_subdomain }}.{{ swag_domain }}"
+  - "{{ zigbee2mqtt_subdomain }}.{{ swag_domain }}"
 
 swag_homeassistant_external_port: 443
 swag_homeassistant_internal_port: 8123

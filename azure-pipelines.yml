@@ -68,3 +68,5 @@ stages:
           value: "$(swagCloudflareApiToken)"
         - name: SWAG_INTERNAL_CIDR
           value: "$(swagInternalCidr)"
+        - name: SWAG_LETSENCRYPT_EMAIL
+          value: "$(swagLetsencryptEmail)"
