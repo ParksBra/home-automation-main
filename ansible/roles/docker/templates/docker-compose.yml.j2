@@ -134,7 +134,7 @@ services:
       - "SUBDOMAINS={{ swag_domains | join(',') }}"
       - "VALIDATION={{ swag_validation_method }}"
       - "SUBDOMAINS={{ homeassistant_subdomain }}"
-      - "DNSPLUGIN={{ swag_dns_plugin }}"
+      - "DNSPLUGIN=cloudflare"
       - "EMAIL={{ swag_letsencrypt_email }}"
     volumes:
       - "{{ swag_mount_path }}:/config:rw"
