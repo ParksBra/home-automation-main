@@ -1,0 +1,36 @@
+- name: Create the named pipe for wol
+  command:
+    cmd: mkfifo /home/docker/homeassistant/data/wolpipe
+    creates: /home/docker/homeassistant/data/wolpipe
+  become: true
+  become_user: root
+
+- name: Ensure the pipe has the correct permissions
+  file:
+    path: /home/docker/homeassistant/data/wolpipe
+    owner: "{{ service_user }}"
+    group: "{{ service_group }}"
+    mode: '0644'
+  become: true
+  become_user: root
+
+- name: Create systemd service for wol
+  template:
+    src: "docker-wol.service.j2"
+    dest: "/etc/systemd/system/docker-wol.service"
+    owner: root
+    group: root
+    mode: '0644'
+  become: true
+  become_user: root
+
+- name: Enable and start the wol service
+  systemd:
+    name: docker-wol.service
+    enabled: true
+    state: started
+    daemon_reload: true
+  become: true
+  become_user: root
+
+
