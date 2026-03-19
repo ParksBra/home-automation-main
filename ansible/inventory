@@ -1,5 +1,5 @@
 [all]
-home-compute-rpi5-0 ansible_host=lilguy-rpi5-0.local
+home-compute-rpi5-0 ansible_host=home-compute-rpi5-0.local
 
 [rpi5]
 home-compute-rpi5-0
