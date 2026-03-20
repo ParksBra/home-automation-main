@@ -25,6 +25,7 @@
   ansible.builtin.shell: tailscale status
   register: tailscale_status
   failed_when: false
+  check_mode: false
   changed_when: false
   no_log: "{{ not debug }}"
 
