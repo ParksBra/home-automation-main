@@ -21,13 +21,16 @@
         state: present
         update_cache: true
 
+- name: Check tailscale status
+  ansible.builtin.shell: tailscale status
+  register: tailscale_status
+  failed_when: false
+  changed_when: false
+
 - name: Configure tailscale
-  ansible.builtin.shell:
-    cmd: |
-      tailscale up --authkey={{ tailscale_auth_key }} --advertise-tags="{{ tailscale_advertise_tags | join(',') }}"
-    creates: /var/lib/tailscale/tailscaled.state
-  become: true
-  become_user: root
+  ansible.builtin.shell: tailscale up --authkey={{ tailscale_auth_key }} --advertise-tags="{{ tailscale_advertise_tags | join(',') }}"
+  when: tailscale_status.rc != 0
+  changed_when: true
 
 - name: Enable tailscale service
   ansible.builtin.service:
