@@ -1,14 +1,27 @@
 ---
-- name: Complete setup and configuration
+- name: Configure base host
   hosts: all
   roles:
-    - common
-    - nut_upsd
-    - docker
-    - tailscale
-    - mosquitto
-    - homeassistant
-    - docker-wol
-    - swag
+    - base
+    - base-tailscale
+    - base-upsd
+    - base-docker
+  become: true
+  become_user: root
+
+- name: Apply compose
+  hosts: all
+  roles:
+    - docker-compose
+  become: true
+  become_user: root
+
+- name: Apply container configurations
+  hosts: all
+  roles:
+    - config-homeassistant
+    - homeassistant-wol
+    - config-mosquitto
+    - config-swag
   become: true
   become_user: root
