@@ -102,7 +102,6 @@ services:
       - mqtt
     volumes:
       - "{{ govee2mqtt_mount_path }}:/data:rw"
-      - /usr/bin/nc:/usr/bin/nc:ro # For network scanning
     environment:
       - "TZ={{ timezone }}"
       - "PUID={{ service_uid }}"
@@ -118,14 +117,14 @@ services:
       - mqtt_connection
     # labels:
     #   - "autoheal=true"
-    healthcheck:
-      test: ["CMD-SHELL", "/usr/bin/nc -z 0.0.0.0 1883"]
-      interval: 30s
-      timeout: 10s
+    # healthcheck:
+    #   test: ["CMD-SHELL", "/usr/bin/nc -z 0.0.0.0 8056"]
+    #   interval: 30s
+    #   timeout: 10s
       retries: 3
 
   swag:
-    image: ghcr.io/linuxserver/swag
+    image: ghcr.io/linuxserver/swag:latest
     container_name: swag
     cap_add:
       - NET_ADMIN
