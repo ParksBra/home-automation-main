@@ -1,25 +1,25 @@
-- name: Check if docker is installed
-  ansible.builtin.command: docker --version
-  register: docker_version
-  ignore_errors: true
-  changed_when: false
+- name: Ensure docker compose directory exists
+  ansible.builtin.file:
+    path: "{{ docker_compose_path }}"
+    state: directory
+    owner: "{{ ansible_user }}"
+    group: "{{ ansible_group }}"
+    mode: '0755'
 
-- name: Install docker script
-  ansible.builtin.shell:
-    cmd: |
-      set -o pipefail
-      sudo curl -sSL https://get.docker.com | sh
-    creates: /usr/bin/docker
-    pipefail: true
-  become: true
-  become_user: "{{ ansible_user }}"
-  when: docker_version.rc != 0
-
-- name: Configure docker service
-  ansible.builtin.service:
-    name: docker
-    enabled: true
-    state: started
+- name: Render docker compose file
+  ansible.builtin.template:
+    src: docker-compose.yml.j2
+    dest: "{{ docker_compose_path }}/docker-compose.yml"
+    owner: "{{ ansible_user }}"
+    group: "{{ ansible_group }}"
+    mode: '0644'
 
 - name: Run docker compose
-  ansible.builtin.include_tasks: compose_changes.yml
+  community.docker.docker_compose_v2:
+    pull: always
+    project_src: "{{ docker_compose_path }}"
+    assume_yes: true
+    state: present
+    build: always
+    recreate: "{{ 'always' if docker_compose_force_recreate else 'auto' }}"
+    remove_orphans: true
