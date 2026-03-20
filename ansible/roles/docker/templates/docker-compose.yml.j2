@@ -48,8 +48,8 @@ services:
       - "{{ mqtt_mount_path }}:/mosquitto:rw"
     networks:
       - mqtt_connection
-    # labels:
-      # - "autoheal=true"
+    labels:
+      - "autoheal=true"
     restart: unless-stopped
     healthcheck:
       test: ["CMD-SHELL", "netstat -tnlp | grep -q 1883; echo $?"]
@@ -116,6 +116,8 @@ services:
       - govee2mqtt_host
       - homeassistant_govee2mqtt
       - mqtt_connection
+    # labels:
+    #   - "autoheal=true"
     healthcheck:
       test: ["CMD-SHELL", "/usr/bin/nc -z 0.0.0.0 1883"]
       interval: 30s
