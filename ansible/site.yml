@@ -9,14 +9,14 @@
   become: true
   become_user: root
 
-- name: Apply compose
+- name: Apply docker compose
   hosts: all
   roles:
     - docker-compose
   become: true
   become_user: root
 
-- name: Apply container configurations
+- name: Apply docker container configurations
   hosts: all
   roles:
     - config-homeassistant
