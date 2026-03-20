@@ -31,6 +31,8 @@ services:
 
   homeassistant:
     image: homeassistant/home-assistant:latest
+    depends_on:
+      - seq
     container_name: homeassistant
     environment:
       - "TZ={{ timezone }}"
@@ -154,6 +156,10 @@ services:
   swag:
     image: ghcr.io/linuxserver/swag:latest
     container_name: swag
+    depends_on:
+      - seq
+      - homeassistant
+      - zigbee2mqtt
     cap_add:
       - NET_ADMIN
     environment:
