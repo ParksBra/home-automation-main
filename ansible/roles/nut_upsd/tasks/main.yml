@@ -1,0 +1,44 @@
+- name: Install nut_upsd components
+  ansible.builtin.apt:
+    name: nut-server
+    state: present
+  with_items:
+    - nut
+    - nut-server
+    - nut-client
+    - usbutils
+  become: true
+  become_user: root
+
+- name: Apply configurations for nut_upsd
+  ansible.builtin.template:
+    src: "{{ item }}.j2"
+    dest: "/etc/nut/{{ item }}"
+    owner: root
+    group: nut
+    mode: '0640'
+    backup: true
+  notify: restart_nut_upsd
+  become: true
+  become_user: root
+  with_items:
+    - nut.conf
+    - upsd.conf
+    - upsd.users
+    - ups.conf
+    - upsmon.conf
+  no_log: "{{ not debug }}"
+
+- name: Flush handlers
+  ansible.builtin.meta: flush_handlers
+
+- name: Ensure nut_upsd is enabled and started
+  ansible.builtin.service:
+    name: "{{ item }}"
+    state: started
+    enabled: true
+  with_items:
+    - nut-server
+    - nut-client
+  become: true
+  become_user: root

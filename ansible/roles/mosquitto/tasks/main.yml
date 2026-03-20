@@ -1,0 +1,8 @@
+- name: Apply mosquitto configuration
+  ansible.builtin.template:
+    src: mosquitto.conf.j2
+    dest: "{{ mqtt_mount_path }}/config/mosquitto.conf"
+    owner: "{{ service_user }}"
+    group: "{{ service_group }}"
+    mode: "0640"
+  notify: Restart Mosquitto container

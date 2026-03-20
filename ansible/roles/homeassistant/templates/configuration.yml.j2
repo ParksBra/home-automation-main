@@ -1,0 +1,30 @@
+default_config:
+
+logger:
+  default: {{ homeassistant_log_level }}
+
+{% for config in homeassistant_enabled_configurations %}
+{{ config }}: !include {{ config }}s.yaml
+{% endfor %}
+
+http:
+  server_port: 8123
+  ip_ban_enabled: {{ homeassistant_enable_ip_ban }}
+  login_attempts_threshold: {{ homeassistant_ip_ban_threshold }}
+  use_x_forwarded_for: true
+  trusted_proxies:
+{% for proxy in homeassistant_trusted_proxies %}
+    - {{ proxy }}
+{% endfor %}
+
+{% if homeassistant_enable_mobile_app %}
+mobile_app:
+{% endif %}
+
+{% if homeassistant_enable_my %}
+my:
+{% endif %}
+
+{% if homeassistant_enable_python_script %}
+python_script:
+{% endif %}

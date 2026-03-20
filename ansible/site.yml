@@ -1,0 +1,14 @@
+---
+- name: Complete setup and configuration
+  hosts: all
+  roles:
+    - common
+    - nut_upsd
+    - docker
+    - tailscale
+    - mosquitto
+    - homeassistant
+    - docker-wol
+    - swag
+  become: true
+  become_user: root

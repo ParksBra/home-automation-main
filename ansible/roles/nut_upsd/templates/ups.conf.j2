@@ -1,0 +1,8 @@
+maxretry = {{ nut_upsmon_maxretry }}
+
+[{{ nut_upsmon_device_name }}]
+driver = "{{ nut_upsmon_device_driver }}"
+port = "{{ nut_upsmon_device_port }}"
+desc = "{{ nut_upsmon_device_desc }}"
+ignorelb
+override.battery.charge.low = {{ nut_upsmon_battery_charge_low }}

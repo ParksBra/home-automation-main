@@ -1,2 +1,37 @@
-- name: Configure SWAG for Home Assistant and other services
-  include_tasks: configure_swag.yml
+- name: Ensure path exists
+  ansible.builtin.file:
+    name: "{{ item }}"
+    state: directory
+    owner: "{{ service_user }}"
+    group: "{{ service_group }}"
+    recurse: true
+  with_items:
+    - "{{ swag_mount_path }}/nginx/proxy-confs"
+    - "{{ swag_mount_path }}/dns-conf"
+    - "{{ swag_mount_path }}/etc/letsencrypt"
+
+- name: Configure SWAG Cloudflare DNS plugin
+  ansible.builtin.template:
+    src: "dns-conf/cloudflare.ini.j2"
+    dest: "{{ swag_mount_path }}/dns-conf/cloudflare.ini"
+    owner: "{{ service_user }}"
+    group: "{{ service_group }}"
+    mode: '640'
+    backup: true
+  notify: restart_swag
+  no_log: "{{ not debug }}"
+
+- name: Configure SWAG subdomains
+  ansible.builtin.template:
+    src: "{{ item }}"
+    dest: "{{ swag_mount_path }}/nginx/proxy-confs/{{ item | basename | regex_replace('\\.j2$', '') }}"
+    owner: "{{ service_user }}"
+    group: "{{ service_group }}"
+    mode: '640'
+    backup: true
+  with_fileglob:
+    - "{{ role_path }}/templates/nginx/proxy-confs/*.j2*"
+  notify: restart_swag
+
+- name: Flush handlers
+  ansible.builtin.meta: flush_handlers

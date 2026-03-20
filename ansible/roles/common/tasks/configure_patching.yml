@@ -1,17 +1,23 @@
-- name: Copy update script to root home directory
-  template:
-    src: "update_script.j2.sh"
-    dest: "/root/update_script.sh"
+- name: Copy patching script to root home directory
+  ansible.builtin.template:
+    src: "patching.sh.j2"
+    dest: "{{ patching_script_path }}"
     owner: root
     group: root
     mode: '0700'
+  become: true
+  become_user: root
 
 - name: Configure patching cron job
-  cron:
-    name: "weekly_patching"
-    minute: "15"
-    hour: "2"
-    weekday: "1"
-    job: "/root/update_script.sh"
+  ansible.builtin.cron:
+    name: "automatic_patching"
+    minute: "{{ patching_cron[0] }}"
+    hour: "{{ patching_cron[1] }}"
+    day: "{{ patching_cron[2] }}"
+    month: "{{ patching_cron[3] }}"
+    weekday: "{{ patching_cron[4] }}"
+    job: "{{ patching_script_path }}"
     user: root
     state: present
+  become: true
+  become_user: root

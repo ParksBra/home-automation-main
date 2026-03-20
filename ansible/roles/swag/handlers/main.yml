@@ -1,2 +1,7 @@
-- name: restart_swag
-  shell: 'docker container restart swag'
+- name: Restart SWAG container
+  community.docker.docker_container:
+    name: swag
+    restart: true
+  become: true
+  become_user: root
+  listen: restart_swag

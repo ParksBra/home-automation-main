@@ -1,35 +1,111 @@
+ansible_ssh_private_key_file: "{{ lookup('env', 'RPI5_SSH_KEY_PATH') }}"
+ansible_ssh_user: "{{ lookup('env', 'RPI5_SSH_USER') | default('ansible', true) }}"
+
+ansible_python_interpreter: "/usr/bin/python3.11"
+
+debug: "{{ lookup('env', 'DEBUG') | default(false) | bool }}"
+
+ansible_user: "{{ ansible_ssh_user }}"
+ansible_group: "{{ ansible_ssh_user }}"
+
+patching_enabled: true
+patching_script_path: "/root/patching.sh"
+patching_cron:
+  - "15" # Minute
+  - "2" # Hour
+  - "*" # Day of month
+  - "*" # Month
+  - "1" # Day of week (0-7) (Sunday is both 0 and 7)
+
 service_user: "docker"
 service_group: "docker"
-ansible_user: "ansible"
-ansible_group: "ansible"
+service_uid: 1001
+service_gid: 1001
 
-homeassistant_subdomain: "ha"
-swag_external_port: 443
-swag_internal_port: 8123
-swag_internal_cidr: "192.168.0.0/16"
-swag_domain: "parkl.ee"
+timezone: "America/Los_Angeles"
 
-debug: false
 home_path: "/home/{{ service_user }}"
 ansible_home_path: "/home/{{ ansible_user }}"
-docker_compose_path: "{{ ansible_home_path }}/docker"
-swag_config_path: "{{ home_path }}/swag/data"
-homeassistant_config_path: "{{ home_path }}/homeassistant/data"
-homeassistant_backup_disk_path: "{{ homeassistant_config_path }}/backups"
-zigbee2mqtt_config_path: "{{ home_path }}/zigbee2mqtt/data"
-zigbee2mqtt_backup_disk_path: "{{ zigbee2mqtt_config_path }}/backups"
-mqtt5_config_path: "{{ home_path }}/mqtt5/config"
-mqtt5_data_path: "{{ home_path }}/mqtt5/config"
-mqtt5_log_path: "{{ home_path }}/mqtt5/log"
-nut_upsd_config_path: "{{ home_path }}/nut_upsd/data"
-openwrt_config_path: "{{ home_path }}/openwrt/data"
-openwrt_wan_interface: "enx2ccf67fb401c"
-openwrt_lan_interface: "enx121f61f080c5"
 
-docker_services:
-  - swag
-  - homeassistant
-  - nut_upsd
-  - zigbee2mqtt
-  - mqtt5
-  - openwrt
+docker_compose_path: "{{ ansible_home_path }}/docker"
+docker_compose_force_recreate: "{{ lookup('env', 'DOCKER_FORCE_CONTAINER_RECREATION') | default(false) | bool }}"
+docker_enable_autoheal: true
+docker_network_interface: "eth0"
+
+local_lan_cidr: "{{ lookup('env', 'LOCAL_LAN_CIDR') | default('192.168.0.0/16') }}"
+local_lan_default_gateway: "{{ lookup('env', 'LOCAL_LAN_DEFAULT_GATEWAY') | default('192.168.0.1') }}"
+
+swag_homeassistant_external_port: 443
+swag_homeassistant_internal_port: 8123
+
+homeassistant_mount_path: "{{ home_path }}/homeassistant/data"
+homeassistant_backup_disk_path: "{{ homeassistant_mount_path }}/backups"
+homeassistant_subdomain: "ha"
+homeassistant_log_level: "info"
+homeassistant_enabled_configurations:
+  - "automation"
+  - "script"
+  - "scene"
+  - "group"
+  - "command_line"
+homeassistant_enable_ip_ban: true
+homeassistant_ip_ban_threshold: 10
+homeassistant_trusted_proxies:
+  - "{{ local_lan_cidr }}" # Local Lan
+  - "{{ tailscale_address_cidr }}" # Tailscale network
+  - "172.16.0.0/12" # Docker network
+  - "127.0.0.1/32" # Docker host localhost
+homeassistant_enable_mobile_app: true
+homeassistant_enable_my: true
+homeassistant_enable_python_script: true
+
+zigbee2mqtt_mount_path: "{{ home_path }}/zigbee2mqtt/data"
+zigbee2mqtt_backup_disk_path: "{{ zigbee2mqtt_mount_path }}/backups"
+zigbee2mqtt_base_topic: "zigbee2mqtt"
+zigbee2mqtt_serial_port: "/dev/ttyACM0"
+zigbee2mqtt_serial_adapter: "ember"
+zigbee2mqtt_serial_baudrate: 460800
+zigbee2mqtt_serial_rtscts: true
+zigbee2mqtt_frontend_enabled: true
+zigbee2mqtt_frontend_port: 8234
+zigbee2mqtt_subdomain: "z2m"
+
+govee2mqtt_mount_path: "{{ home_path }}/govee2mqtt/data"
+govee2mqtt_temperature_scale: "F"
+govee2mqtt_ip_range_cidr: "192.168.50.135/32"
+
+mqtt_mount_path: "{{ home_path }}/mqtt5"
+mqtt_version: "5"
+
+nut_upsmon_maxretry: 5
+nut_upsmon_device_name: "cyberpower"
+nut_upsmon_device_driver: "usbhid-ups"
+nut_upsmon_device_port: "auto"
+nut_upsmon_device_desc: "CyberPower ST625U"
+nut_upsmon_battery_charge_low: 15
+nut_users_upsmon_password: "{{ lookup('env', 'NUT_UPSD_UPSMON_USER_PASSWORD') | default('upsmon') }}"
+nut_users_upsadmin_password: "{{ lookup('env', 'NUT_UPSD_UPSADMIN_USER_PASSWORD') | default('admin') }}"
+nut_upsd_port: 3493
+
+swag_internal_cidrs:
+  - "{{ local_lan_cidr }}" # Local Lan
+  - "{{ tailscale_address_cidr }}" # Tailscale network
+  - "172.16.0.0/12" # Docker network
+  - "127.0.0.1/32" # Docker host localhost
+swag_domain: "{{ lookup('env', 'EXTERNAL_DOMAIN') | default('localhost') }}"
+swag_mount_path: "{{ home_path }}/swag/data"
+swag_validation_method: "dns"
+swag_cloudflare_api_token: "{{ lookup('env', 'SWAG_CLOUDFLARE_API_TOKEN') | default('token') }}"
+swag_letsencrypt_email: "{{ lookup('env', 'SWAG_LETSENCRYPT_EMAIL') | default('') }}"
+swag_subdomains:
+  - "{{ homeassistant_subdomain }}"
+  - "{{ zigbee2mqtt_subdomain }}"
+
+tailscale_repo_signing_key_url: "https://pkgs.tailscale.com/stable/{{ ansible_distribution | lower }}/{{ ansible_distribution_release | lower }}.noarmor.gpg"
+tailscale_repo_signing_key_file: "/usr/share/keyrings/tailscale-archive-keyring.gpg"
+tailscale_repo: "deb [signed-by={{ tailscale_repo_signing_key_file }}] https://pkgs.tailscale.com/stable/{{ ansible_distribution | lower }} {{ ansible_distribution_release | lower }} main"
+tailscale_auth_key: "{{ lookup('env', 'TAILSCALE_AUTH_KEY') | default('') }}"
+tailscale_address: "0.0.0.0" # This will be set during tailscale role execution
+tailscale_address_cidr: "{{ tailscale_address | default('0.0.0.0') }}/32" # tailscale_address will be set during tailscale role execution
+tailscale_advertise_tags:
+  - "tag:home-server"

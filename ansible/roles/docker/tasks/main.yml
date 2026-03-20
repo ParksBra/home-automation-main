@@ -1,5 +1,25 @@
-- name: install and configure docker
-  include_tasks: install_docker.yml
+- name: Check if docker is installed
+  ansible.builtin.command: docker --version
+  register: docker_version
+  ignore_errors: true
+  changed_when: false
 
-- name: apply changes via docker compose
-  include_tasks: compose_changes.yml
+- name: Install docker script
+  ansible.builtin.shell:
+    cmd: |
+      set -o pipefail
+      sudo curl -sSL https://get.docker.com | sh
+    creates: /usr/bin/docker
+    pipefail: true
+  become: true
+  become_user: "{{ ansible_user }}"
+  when: docker_version.rc != 0
+
+- name: Configure docker service
+  ansible.builtin.service:
+    name: docker
+    enabled: true
+    state: started
+
+- name: Run docker compose
+  ansible.builtin.include_tasks: compose_changes.yml

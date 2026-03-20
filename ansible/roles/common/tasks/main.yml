@@ -1,19 +1,21 @@
-- name: update apt
-  apt:
-    update_cache: yes
-    upgrade: 'safe'
-    state: latest
+- name: Update apt
+  ansible.builtin.apt:
+    update_cache: true
+    autoclean: true
+    autoremove: true
+    upgrade: safe
+    state: latest # noqa package-latest
 
-- name: set hostname
-  hostname:
+- name: Set hostname
+  ansible.builtin.hostname:
     name: "{{ inventory_hostname }}"
   when: inventory_hostname is defined
 
-- name: create users and groups
-  include_tasks: configure_user_group.yml
+- name: Create users and groups
+  ansible.builtin.include_tasks: configure_user_group.yml
 
-- name: configure patching
-  include_tasks: configure_patching.yml
+- name: Configure patching
+  ansible.builtin.include_tasks: configure_patching.yml
 
-- name: configure mounting points
-  include_tasks: mount_disks.yml
+- name: Configure mounting points
+  ansible.builtin.include_tasks: mount_disks.yml

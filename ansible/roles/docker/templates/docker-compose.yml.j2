@@ -1,0 +1,176 @@
+services:
+{% if docker_enable_autoheal %}
+  autoheal:
+    image: willfarrell/autoheal:latest
+    container_name: autoheal
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    environment:
+      - AUTOHEAL_CONTAINER_LABEL=all
+    restart: always
+
+{% endif %}
+  homeassistant:
+    image: homeassistant/home-assistant:latest
+    container_name: homeassistant
+    environment:
+      - "TZ={{ timezone }}"
+      - "PUID={{ service_uid }}"
+      - "PGID={{ service_gid }}"
+      - "DISABLE_JEMALLOC=true"
+    healthcheck:
+      test: ["CMD-SHELL", "wget --no-verbose --tries=1 --spider http://0.0.0.0:8123/manifest.json || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
+    volumes:
+      - "{{ homeassistant_mount_path }}:/config:rw"
+      - /run/dbus:/run/dbus:ro
+    restart: unless-stopped
+    labels:
+      - "autoheal=true"
+    networks:
+      - homeassistant_backend
+      - homeassistant_swag
+      - mqtt_connection
+
+  mqtt:
+    image: eclipse-mosquitto:latest
+    container_name: mqtt
+    environment:
+      - "TZ={{ timezone }}"
+      - "PUID={{ service_uid }}"
+      - "PGID={{ service_gid }}"
+    ports:
+      - 9001:9001
+    volumes:
+      - "{{ mqtt_mount_path }}:/mosquitto:rw"
+    networks:
+      - mqtt_connection
+    labels:
+      - "autoheal=true"
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "netstat -tnlp | grep -q 1883; echo $?"]
+
+  zigbee2mqtt:
+    container_name: zigbee2mqtt
+    image: ghcr.io/koenkk/zigbee2mqtt:latest
+    depends_on:
+      - mqtt
+    restart: unless-stopped
+    volumes:
+      - "{{ zigbee2mqtt_mount_path }}:/app/data:rw"
+      - "/run/udev:/run/udev:ro"
+    devices:
+      - "{{ zigbee2mqtt_serial_port }}:{{ zigbee2mqtt_serial_port }}"
+    ports:
+      - "{{ zigbee2mqtt_frontend_port }}:8080"
+    environment:
+      - "TZ={{ timezone }}"
+      - "PUID={{ service_uid }}"
+      - "PGID={{ service_gid }}"
+      - "ZIGBEE2MQTT_CONFIG_MQTT_SERVER=mqtt://mqtt:1883"
+      - "ZIGBEE2MQTT_CONFIG_MQTT_VERSION={{ mqtt_version }}"
+      - "ZIGBEE2MQTT_CONFIG_MQTT_BASE_TOPIC={{ zigbee2mqtt_base_topic }}"
+      - "ZIGBEE2MQTT_CONFIG_SERIAL_PORT={{ zigbee2mqtt_serial_port }}"
+      - "ZIGBEE2MQTT_CONFIG_SERIAL_ADAPTER={{ zigbee2mqtt_serial_adapter }}"
+      - "ZIGBEE2MQTT_CONFIG_SERIAL_BAUDRATE={{ zigbee2mqtt_serial_baudrate }}"
+      - "ZIGBEE2MQTT_CONFIG_SERIAL_RTSCTS={{ zigbee2mqtt_serial_rtscts }}"
+      - "ZIGBEE2MQTT_CONFIG_FRONTEND_ENABLED={{ zigbee2mqtt_frontend_enabled }}"
+      - "ZIGBEE2MQTT_CONFIG_FRONTEND_PORT=8080"
+      - "ZIGBEE2MQTT_CONFIG_HOMEASSISTANT_ENABLED=true"
+    networks:
+      - homeassistant_zigbee2mqtt
+      - mqtt_connection
+      - homeassistant_swag
+    labels:
+      - "autoheal=true"
+    healthcheck:
+      test: ["CMD-SHELL", "wget --no-verbose --tries=1 --spider http://localhost:8080/ || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
+
+  govee2mqtt:
+    image: ghcr.io/wez/govee2mqtt:latest
+    container_name: govee2mqtt
+    restart: unless-stopped
+    depends_on:
+      - mqtt
+    volumes:
+      - "{{ govee2mqtt_mount_path }}:/data:rw"
+    environment:
+      - "TZ={{ timezone }}"
+      - "PUID={{ service_uid }}"
+      - "PGID={{ service_gid }}"
+      - "GOVEE_TEMPERATURE_SCALE={{ govee2mqtt_temperature_scale }}"
+      - "RUST_LOG_STYLE=always"
+      - "GOVEE_MQTT_HOST=mqtt"
+      - "GOVEE_MQTT_PORT=1883"
+      - "COLORBT_SHOW_HIDDEN=1"
+    networks:
+      - govee2mqtt_host
+      - homeassistant_govee2mqtt
+      - mqtt_connection
+    # labels:
+    #   - "autoheal=true"
+    # healthcheck:
+    #   test: ["CMD-SHELL", "/usr/bin/nc -z 0.0.0.0 8056"]
+    #   interval: 30s
+    #   timeout: 10s
+    #   retries: 3
+
+  swag:
+    image: ghcr.io/linuxserver/swag:latest
+    container_name: swag
+    cap_add:
+      - NET_ADMIN
+    environment:
+      - "PUID={{ service_uid }}"
+      - "PGID={{ service_gid }}"
+      - "TZ={{ timezone }}"
+      - "URL={{ swag_domain }}"
+      - "SUBDOMAINS={{ swag_subdomains | join(',') }}"
+      - "VALIDATION={{ swag_validation_method }}"
+      - "DNSPLUGIN=cloudflare"
+      - "EMAIL={{ swag_letsencrypt_email }}"
+    volumes:
+      - "{{ swag_mount_path }}:/config:rw"
+    ports:
+      - "{{ swag_homeassistant_external_port }}:{{ swag_homeassistant_external_port }}"
+      - "{{ swag_homeassistant_internal_port }}:{{ swag_homeassistant_internal_port }}"
+    restart: unless-stopped
+    labels:
+      - "autoheal=true"
+    healthcheck:
+      test: ['CMD-SHELL', 'netstat -tnlp | grep -q 443; echo $?']
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
+    networks:
+      - homeassistant_swag
+
+networks:
+  homeassistant_backend:
+    driver: bridge
+  homeassistant_swag:
+    driver: bridge
+  homeassistant_zigbee2mqtt:
+    driver: bridge
+  homeassistant_govee2mqtt:
+    driver: bridge
+  govee2mqtt_host:
+    driver: macvlan
+    driver_opts:
+      parent: {{ docker_network_interface }}
+    ipam:
+      config:
+        - subnet: {{ local_lan_cidr }}
+          gateway: {{ local_lan_default_gateway }}
+          ip_range: {{ govee2mqtt_ip_range_cidr }}
+  mqtt_connection:
+    driver: bridge

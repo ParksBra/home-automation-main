@@ -1,0 +1,76 @@
+trigger:
+  branches:
+    include:
+      - main
+
+pool:
+  name: 'local-lab'
+  vmImage: 'ubuntu-latest'
+
+parameters:
+  - name: forceContainerRecreation
+    displayName: 'Force Docker Container Recreation'
+    type: boolean
+    default: false
+
+  - name: ansibleDebug
+    displayName: 'Enable Ansible Debugging'
+    type: boolean
+    default: false
+
+  - name: ansibleApply
+    displayName: 'Apply Ansible Playbooks'
+    type: boolean
+    default: true
+
+variables:
+  - group: rpi5-ssh
+  - group: rpi5
+
+resources:
+  repositories:
+    - repository: templates
+      type: github
+      endpoint: ParksBra
+      ref: main
+      name: ParksBra/home-k8s-ado-templates
+
+stages:
+  - template: ansible.yml@templates
+    parameters:
+      pythonVenvCacheVersion: "1"
+      pythonRequirementsFileRelativePath: "requirements.txt"
+      ansibleRequirementsFileRelativePath: "requirements.yml"
+      ansibleRepository: "self"
+      ansibleRepositoryAnsiblePath: "ansible"
+      ansibleConfigRelativePath: "ansible.cfg"
+      ansibleSshConfigurations:
+        - group: rpi5
+          user: ansible
+          keySecretFileName: $(rpi5-ssh-ansible-key-secret-file)
+          keyPassphrase: ""
+      ansiblePlaybooks:
+        - site.yml
+      ansibleDebug: ${{ parameters.ansibleDebug }}
+      ansibleApply: ${{ parameters.ansibleApply }}
+      ansiblePlaybookExtraEnvironmentVariables:
+        - name: CI_WORKSPACE
+          value: "$(Pipeline.Workspace)"
+        - name: NUT_UPSD_UPSMON_USER_PASSWORD
+          value: "$(nutUpsdUpsmonUserPassword)"
+        - name: NUT_UPSD_UPSADMIN_USER_PASSWORD
+          value: "$(nutUpsdUpsadminUserPassword)"
+        - name: DOCKER_FORCE_CONTAINER_RECREATION
+          value: "${{ parameters.forceContainerRecreation }}"
+        - name: EXTERNAL_DOMAIN
+          value: "$(externalDomain)"
+        - name: SWAG_CLOUDFLARE_API_TOKEN
+          value: "$(swagCloudflareApiToken)"
+        - name: SWAG_LETSENCRYPT_EMAIL
+          value: "$(swagLetsencryptEmail)"
+        - name: LOCAL_LAN_CIDR
+          value: "$(localLanCidr)"
+        - name: LOCAL_LAN_DEFAULT_GATEWAY
+          value: "$(localLanDefaultGateway)"
+        - name: TAILSCALE_AUTH_KEY
+          value: "$(tailscaleClientSecret)"

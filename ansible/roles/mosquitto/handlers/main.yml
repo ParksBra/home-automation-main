@@ -1,7 +1,7 @@
-- name: Restart Home Assistant
+- name: Restart Mosquitto container
   community.docker.docker_container:
-    name: homeassistant
+    name: mqtt
     restart: true
   become: true
   become_user: root
-  listen: restart_homeassistant
+  listen: restart_mosquitto

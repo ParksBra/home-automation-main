@@ -1,2 +1,31 @@
-- name: Configure Home Assistant
-  include_tasks: configure_homeassistant.yml
+- name: Ensure path exists
+  ansible.builtin.file:
+    name: "{{ homeassistant_mount_path }}"
+    state: directory
+    owner: "{{ service_user }}"
+    group: "{{ service_group }}"
+    recurse: true
+  changed_when: false
+
+- name: Ensure all sub-config files exist
+  ansible.builtin.file:
+    name: "{{ homeassistant_mount_path }}/{{ item }}s.yaml"
+    state: touch
+    owner: "{{ service_user }}"
+    group: "{{ service_group }}"
+    mode: '664'
+  with_items: "{{ homeassistant_enabled_configurations }}"
+  changed_when: false
+
+- name: Copy primary configuration
+  ansible.builtin.template:
+    src: "configuration.yml.j2"
+    dest: "{{ homeassistant_mount_path }}/configuration.yaml"
+    owner: "{{ service_user }}"
+    group: "{{ service_group }}"
+    mode: '664'
+    backup: true
+  notify: restart_homeassistant
+
+- name: Flush handlers
+  ansible.builtin.meta: flush_handlers
