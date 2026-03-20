@@ -14,10 +14,6 @@
     group: "{{ ansible_group }}"
     mode: '0644'
 
-# - name: Debug domains
-#   ansible.builtin.debug:
-#     msg: "Home Assistant domain: {{ homeassistant_subdomain }}.{{ swag_domain }}, Zigbee2MQTT domain: {{ zigbee2mqtt_subdomain }}.{{ swag_domain }}, SWAG domain: {{ swag_domain }}"
-
 - name: Run general docker compose
   community.docker.docker_compose_v2:
     pull: always
