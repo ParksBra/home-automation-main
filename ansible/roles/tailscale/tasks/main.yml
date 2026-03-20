@@ -48,8 +48,11 @@
   ansible.builtin.command: tailscale ip -4
   register: tailscale_address_temp
   changed_when: false
+  failed_when: false
+  check_mode: false
 
 - name: Set tailscale address fact
   ansible.builtin.set_fact:
     tailscale_address: "{{ tailscale_address_temp.stdout }}"
     cacheable: true
+  when: tailscale_address_temp.rc == 0
