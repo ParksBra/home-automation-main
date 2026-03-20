@@ -19,7 +19,7 @@ services:
       - "PGID={{ service_gid }}"
       - "DISABLE_JEMALLOC=true"
     healthcheck:
-      test: ['CMD-SHELL', 'wget --no-verbose --tries=1 --spider http://0.0.0.0:8123/manifest.json || exit 1']
+      test: ["CMD-SHELL", "wget --no-verbose --tries=1 --spider http://0.0.0.0:8123/manifest.json || exit 1"]
       interval: 30s
       timeout: 10s
       retries: 3
@@ -52,7 +52,7 @@ services:
       # - "autoheal=true"
     restart: unless-stopped
     healthcheck:
-      test: ['CMD-SHELL', 'netstat -tnlp | grep -q 1883; echo $?']
+      test: ["CMD-SHELL", "netstat -tnlp | grep -q 1883; echo $?"]
 
   zigbee2mqtt:
     container_name: zigbee2mqtt
@@ -102,6 +102,7 @@ services:
       - mqtt
     volumes:
       - "{{ govee2mqtt_mount_path }}:/data:rw"
+      - /usr/bin/nc:/usr/bin/nc:ro # For network scanning
     environment:
       - "TZ={{ timezone }}"
       - "PUID={{ service_uid }}"
@@ -115,6 +116,11 @@ services:
       - govee2mqtt_host
       - homeassistant_govee2mqtt
       - mqtt_connection
+    healthcheck:
+      test: ["CMD-SHELL", "/usr/bin/nc -z 0.0.0.0 1883"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
 
   swag:
     image: ghcr.io/linuxserver/swag
