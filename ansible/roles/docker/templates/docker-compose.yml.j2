@@ -132,7 +132,7 @@ services:
       - "PGID={{ service_gid }}"
       - "TZ={{ timezone }}"
       - "URL={{ swag_domain }}"
-      - "SUBDOMAINS={{ swag_domains | join(',') }}"
+      - "SUBDOMAINS={{ swag_subdomains | join(',') }}"
       - "VALIDATION={{ swag_validation_method }}"
       - "DNSPLUGIN=cloudflare"
       - "EMAIL={{ swag_letsencrypt_email }}"
