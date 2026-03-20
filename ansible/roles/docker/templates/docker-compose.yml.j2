@@ -118,7 +118,7 @@ services:
       - "GOVEE_MQTT_PORT=1883"
       - "COLORBT_SHOW_HIDDEN=1"
     networks:
-      # - govee2mqtt_host
+      - govee2mqtt_host
       - homeassistant_govee2mqtt
       - mqtt_connection
 
@@ -164,14 +164,14 @@ networks:
     driver: bridge
   homeassistant_govee2mqtt:
     driver: bridge
-  # govee2mqtt_host:
-  #   driver: macvlan
-  #   driver_opts:
-  #     parent: {{ docker_network_interface }}
-  #   ipam:
-  #     config:
-  #       - subnet: {{ local_lan_cidr }}
-  #         gateway: {{ local_lan_default_gateway }}
-  #         ip_range: {{ govee2mqtt_ip_range_cidr }}
+  govee2mqtt_host:
+    driver: macvlan
+    driver_opts:
+      parent: {{ docker_network_interface }}
+    ipam:
+      config:
+        - subnet: {{ local_lan_cidr }}
+          gateway: {{ local_lan_default_gateway }}
+          ip_range: {{ govee2mqtt_ip_range_cidr }}
   mqtt_connection:
     driver: bridge
