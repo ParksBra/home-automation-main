@@ -72,3 +72,5 @@ stages:
           value: "$(localLanCidr)"
         - name: LOCAL_LAN_DEFAULT_GATEWAY
           value: "$(localLanDefaultGateway)"
+        - name: TAILSCALE_AUTH_KEY
+          value: "$(tailscaleClientSecret)"

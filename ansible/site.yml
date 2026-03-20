@@ -5,6 +5,7 @@
     - common
     - nut_upsd
     - docker
+    - tailscale
     - mosquitto
     - homeassistant
     - docker-wol

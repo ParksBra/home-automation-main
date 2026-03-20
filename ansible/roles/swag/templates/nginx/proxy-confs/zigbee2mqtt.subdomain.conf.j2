@@ -3,8 +3,9 @@ server {
     listen [::]:443 ssl;
 
     server_name {{ zigbee2mqtt_subdomain }}.{{ swag_domain }};
-
-    allow {{ swag_internal_cidr }};
+{% for cidr in swag_internal_cidrs %}
+    allow {{ cidr }};
+{% endfor %}
     deny all;
 
     include /config/nginx/ssl.conf;

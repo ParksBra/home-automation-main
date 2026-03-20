@@ -86,7 +86,9 @@ nut_users_upsmon_password: "{{ lookup('env', 'NUT_UPSD_UPSMON_USER_PASSWORD') | 
 nut_users_upsadmin_password: "{{ lookup('env', 'NUT_UPSD_UPSADMIN_USER_PASSWORD') | default('admin') }}"
 nut_upsd_port: 3493
 
-swag_internal_cidr: "{{ local_lan_cidr }}"
+swag_internal_cidrs:
+  - "{{ local_lan_cidr }}"
+  - "{{ tailscale_address | default('0.0.0.0') }}/32" # This will be set during tailscale role
 swag_domain: "{{ lookup('env', 'EXTERNAL_DOMAIN') | default('localhost') }}"
 swag_mount_path: "{{ home_path }}/swag/data"
 swag_validation_method: "dns"
@@ -95,3 +97,7 @@ swag_letsencrypt_email: "{{ lookup('env', 'SWAG_LETSENCRYPT_EMAIL') | default(''
 swag_subdomains:
   - "{{ homeassistant_subdomain }}"
   - "{{ zigbee2mqtt_subdomain }}"
+
+tailscale_auth_key: "{{ lookup('env', 'TAILSCALE_AUTH_KEY') | default('') }}"
+tailscale_advertise_tags:
+  - "tag:home-server"
