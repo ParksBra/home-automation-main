@@ -27,6 +27,7 @@ services:
     restart: unless-stopped
     networks:
       - seq_ingestion
+      - homeassistant_swag
 
   homeassistant:
     image: homeassistant/home-assistant:latest
