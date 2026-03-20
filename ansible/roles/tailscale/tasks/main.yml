@@ -38,6 +38,10 @@
 
 - name: Get tailscale IP address
   ansible.builtin.shell: tailscale ip -4
-  register: tailscale_address
-  cacheable: true
+  register: tailscale_address_temp
   changed_when: false
+
+- name: Set tailscale address fact
+  ansible.builtin.set_fact:
+    tailscale_address: "{{ tailscale_address_temp.stdout }}"
+    cacheable: true
