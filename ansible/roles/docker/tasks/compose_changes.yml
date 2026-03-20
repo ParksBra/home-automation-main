@@ -4,6 +4,7 @@
     state: directory
     owner: "{{ ansible_user }}"
     group: "{{ ansible_group }}"
+    mode: '0755'
 
 - name: Render docker compose file
   ansible.builtin.template:
