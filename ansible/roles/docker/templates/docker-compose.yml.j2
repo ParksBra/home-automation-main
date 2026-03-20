@@ -1,7 +1,7 @@
 services:
 {% if docker_enable_autoheal %}
   autoheal:
-    image: willfarrell/autoheal
+    image: willfarrell/autoheal:latest
     container_name: autoheal
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
@@ -11,7 +11,7 @@ services:
 
 {% endif %}
   homeassistant:
-    image: lscr.io/linuxserver/homeassistant
+    image: homeassistant/home-assistant:latest
     container_name: homeassistant
     environment:
       - "TZ={{ timezone }}"
@@ -38,7 +38,7 @@ services:
       - mqtt_connection
 
   mqtt:
-    image: eclipse-mosquitto
+    image: eclipse-mosquitto:latest
     container_name: mqtt
     environment:
       - "TZ={{ timezone }}"
@@ -60,7 +60,7 @@ services:
 
   zigbee2mqtt:
     container_name: zigbee2mqtt
-    image: ghcr.io/koenkk/zigbee2mqtt
+    image: ghcr.io/koenkk/zigbee2mqtt:latest
     depends_on:
       - mqtt
     restart: unless-stopped
