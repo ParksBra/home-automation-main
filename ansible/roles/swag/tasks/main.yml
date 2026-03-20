@@ -21,17 +21,6 @@
   notify: restart_swag
   no_log: "{{ not debug }}"
 
-# - name: Configure SWAG Let's Encrypt
-#   ansible.builtin.template:
-#     src: "etc/letsencrypt/cli.ini.j2"
-#     dest: "{{ swag_mount_path }}/etc/letsencrypt/cli.ini"
-#     owner: "{{ service_user }}"
-#     group: "{{ service_group }}"
-#     mode: '640'
-#     backup: true
-#   notify: restart_swag
-#   no_log: "{{ not debug }}"
-
 - name: Configure SWAG subdomains
   ansible.builtin.template:
     src: "{{ item }}"
