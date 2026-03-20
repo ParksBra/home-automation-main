@@ -6,6 +6,10 @@
     upgrade: safe
     state: latest # noqa package-latest
 
+- name: Print all available facts
+  ansible.builtin.debug:
+    var: ansible_facts
+
 - name: Set hostname
   ansible.builtin.hostname:
     name: "{{ inventory_hostname }}"
