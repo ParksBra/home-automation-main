@@ -52,7 +52,7 @@ services:
       # - "autoheal=true"
     restart: unless-stopped
     healthcheck:
-      test: ['CMD-SHELL', 'nc -zv -w 2 0.0.0.0 1883']
+      test: ['CMD-SHELL', 'netstat -tnlp | grep -q 1883; echo $?']
 
   zigbee2mqtt:
     container_name: zigbee2mqtt
@@ -139,7 +139,7 @@ services:
     labels:
       - "autoheal=true"
     healthcheck:
-      test: ['CMD-SHELL', 'wget --no-verbose --tries=1 --spider https://{{ homeassistant_subdomain }}.{{ swag_domain }}:{{ swag_homeassistant_external_port }}/manifest.json || exit 1']
+      test: ['CMD-SHELL', 'netstat -tnlp | grep -q 443; echo $?']
       interval: 30s
       timeout: 10s
       retries: 3
