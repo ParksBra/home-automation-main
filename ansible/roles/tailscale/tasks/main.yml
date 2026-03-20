@@ -2,15 +2,15 @@
   block:
     - name: Download signing key
       ansible.builtin.get_url:
-        url: "https://pkgs.tailscale.com/stable/{{ ansible_distribution | lower }}/{{ ansible_distribution_release | lower }}.noarmor.gpg"
-        dest: /usr/share/keyrings/tailscale-archive-keyring.gpg
+        url: "{{ tailscale_repo_signing_key_url }}"
+        dest: "{{ tailscale_repo_signing_key_file }}"
         owner: root
         group: root
         mode: '0644'
 
     - name: Add tailscale repository
       ansible.builtin.apt_repository:
-        repo: "deb [signed-by=/usr/share/keyrings/tailscale-archive-keyring.gpg] https://pkgs.tailscale.com/stable/{{ ansible_distribution | lower }} {{ ansible_distribution_release | lower }} main"
+        repo: "{{ tailscale_repo }}"
         filename: tailscale
         state: present
         update_cache: true
@@ -22,7 +22,7 @@
         update_cache: true
 
 - name: Check tailscale status
-  ansible.builtin.shell: tailscale status
+  ansible.builtin.command: tailscale status
   register: tailscale_status
   failed_when: false
   check_mode: false
@@ -30,7 +30,10 @@
   no_log: "{{ not debug }}"
 
 - name: Configure tailscale
-  ansible.builtin.shell: tailscale up --authkey={{ tailscale_auth_key }} --advertise-tags="{{ tailscale_advertise_tags | join(',') }}"
+  ansible.builtin.command: |
+    tailscale up \
+      --authkey="{{ tailscale_auth_key }}"\
+      --advertise-tags="{{ tailscale_advertise_tags | join(',') }}"
   when: tailscale_status.rc != 0
   changed_when: true
   no_log: "{{ not debug }}"
@@ -42,7 +45,7 @@
     state: started
 
 - name: Get tailscale IP address
-  ansible.builtin.shell: tailscale ip -4
+  ansible.builtin.command: tailscale ip -4
   register: tailscale_address_temp
   changed_when: false
 
