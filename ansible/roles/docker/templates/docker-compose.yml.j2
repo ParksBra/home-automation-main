@@ -52,11 +52,11 @@ services:
       - mqtt_connection
     labels:
 {% if docker_enable_autoheal %}
-      - "autoheal=true"
+      # - "autoheal=true"
 {% endif %}
     restart: unless-stopped
-    # healthcheck:
-    #   test: ['CMD-SHELL', 'wget --no-verbose --tries=1 --spider http://0.0.0.0:1883/ || exit 1']
+    healthcheck:
+      test: ['CMD-SHELL', 'nc -zv -w 2 0.0.0.0 1883']
 
   zigbee2mqtt:
     container_name: zigbee2mqtt
