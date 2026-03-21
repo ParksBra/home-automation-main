@@ -34,12 +34,14 @@ services:
     container_name: seq-gelf-input
     depends_on:
       - seq
+    ports:
+      - 12201:12201/udp
     environment:
       SEQ_ADDRESS: "http://seq:5341"
+      GELF_ADDRESS: "127.0.0.1:12201/udp"
     restart: unless-stopped
     networks:
       - seq_ingestion
-      - seq_gelf_input
 
   homeassistant:
     image: homeassistant/home-assistant:latest
@@ -69,7 +71,6 @@ services:
       - homeassistant_backend
       - homeassistant_swag
       - mqtt_connection
-      - seq_ingestion
 
   mqtt:
     image: eclipse-mosquitto:latest
@@ -152,10 +153,9 @@ services:
       - "GOVEE_MQTT_PORT=1883"
       - "COLORBT_SHOW_HIDDEN=1"
     networks:
-      # - govee2mqtt_host
+      - govee2mqtt_host
       - homeassistant_govee2mqtt
       - mqtt_connection
-      - seq_gelf_input
     # labels:
     #   - "autoheal=true"
     # healthcheck:
@@ -166,7 +166,7 @@ services:
     logging:
       driver: gelf
       options:
-        gelf-address: "udp://seq-gelf-input:12201"
+        gelf-address: "udp://127.0.0.1:12201"
 
   swag:
     image: ghcr.io/linuxserver/swag:latest
@@ -203,7 +203,6 @@ services:
       start_period: 10s
     networks:
       - homeassistant_swag
-      - seq_ingestion
 
 networks:
   homeassistant_backend:
@@ -226,6 +225,4 @@ networks:
   mqtt_connection:
     driver: bridge
   seq_ingestion:
-    driver: bridge
-  seq_gelf_input:
     driver: bridge
