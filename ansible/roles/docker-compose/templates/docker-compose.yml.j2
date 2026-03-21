@@ -21,14 +21,25 @@ services:
       - "SEQ_API_CANONICALURI=https://{{ seq_subdomain }}.{{ swag_domain }}"
       - "SEQ_FIRSTRUN_NOAUTHENTICATION=true"
     ports:
-      - 5341:5341
       - 8456:80
     volumes:
       - "{{ seq_mount_path }}:/data:rw"
     restart: unless-stopped
     networks:
-      - seq_ingestion
       - homeassistant_swag
+      - seq_ingestion
+
+  seq-input-gelf:
+    image: datalust/seq-input-gelf:latest
+    container_name: seq-input-gelf
+    depends_on:
+      - seq
+    environment:
+      SEQ_ADDRESS: "http://seq:5341"
+    restart: unless-stopped
+    networks:
+      - seq_ingestion
+      - seq_gelf_input
 
   homeassistant:
     image: homeassistant/home-assistant:latest
@@ -129,6 +140,7 @@ services:
     restart: unless-stopped
     depends_on:
       - mqtt
+      - seq-input-gelf
     ports:
       - 8345:8056
     volumes:
@@ -146,6 +158,7 @@ services:
       - govee2mqtt_host
       - homeassistant_govee2mqtt
       - mqtt_connection
+      - seq_ingestion
     # labels:
     #   - "autoheal=true"
     # healthcheck:
@@ -153,6 +166,10 @@ services:
     #   interval: 30s
     #   timeout: 10s
     #   retries: 3
+    logging:
+      driver: gelf
+      options:
+        gelf-address: "udp://seq-input-gelf:12201"
 
   swag:
     image: ghcr.io/linuxserver/swag:latest
