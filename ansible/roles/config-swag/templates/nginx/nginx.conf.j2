@@ -78,7 +78,7 @@ http {
       '"body_bytes_sent": $body_bytes_sent, '
       '"request_time": $request_time, '
       '"http_user_agent": "$http_user_agent"'
-    '}'
+    '}';
     access_log /dev/stdout gelf_json;
 
     # Includes virtual hosts configs.
