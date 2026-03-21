@@ -59,10 +59,10 @@ services:
       - homeassistant_swag
       - mqtt_connection
       - seq_ingestion
-    logging:
-      driver: gelf
-      options:
-        gelf-address: "udp://seq:5341"
+    # logging:
+    #   driver: gelf
+    #   options:
+    #     gelf-address: "udp://seq:5341"
 
   mqtt:
     image: eclipse-mosquitto:latest
