@@ -175,8 +175,8 @@ services:
     volumes:
       - "{{ swag_mount_path }}:/config:rw"
     ports:
-      - "{{ swag_external_port }}:{{ swag_external_port }}"
-      - "{{ swag_internal_port }}:{{ swag_internal_port }}"
+      - "{{ swag_https_port }}:{{ swag_https_port }}"
+      - "{{ swag_http_port }}:{{ swag_http_port }}"
     restart: unless-stopped
     labels:
       - "autoheal=true"

@@ -1,6 +1,6 @@
 server {
-    listen {{ swag_internal_port }};
-    listen [::]:{{ swag_internal_port }};
+    listen {{ swag_https_port }} ssl;
+    listen [::]:{{ swag_https_port }} ssl;
 
     server_name {{ zigbee2mqtt_subdomain }}.{{ swag_domain }};
 {% for cidr in swag_internal_cidrs %}

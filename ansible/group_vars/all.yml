@@ -83,8 +83,8 @@ nut_users_upsmon_password: "{{ lookup('env', 'NUT_UPSD_UPSMON_USER_PASSWORD') | 
 nut_users_upsadmin_password: "{{ lookup('env', 'NUT_UPSD_UPSADMIN_USER_PASSWORD') | default('admin') }}"
 nut_upsd_port: 3493
 
-swag_external_port: 443
-swag_internal_port: 8080
+swag_https_port: 443
+swag_http_port: 80
 swag_internal_cidrs:
   - "{{ local_lan_cidr }}" # Local Lan
   - "{{ tailscale_address_cidr }}" # Tailscale network
