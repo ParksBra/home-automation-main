@@ -38,7 +38,7 @@ services:
       - 12201:12201/udp
     environment:
       SEQ_ADDRESS: "http://seq:5341"
-      GELF_ADDRESS: "127.0.0.1:12201/udp"
+      # GELF_ADDRESS: "127.0.0.1:12201/udp"
     restart: unless-stopped
     networks:
       - seq_ingestion
