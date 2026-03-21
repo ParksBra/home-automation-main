@@ -19,6 +19,7 @@ services:
       - "PGID={{ service_gid }}"
       - "ACCEPT_EULA=Y"
       - "SEQ_API_CANONICALURI=https://{{ seq_subdomain }}.{{ swag_domain }}"
+      - "SEQ_FIRSTRUN_NOAUTHENTICATION=true"
     ports:
       - 5341:5341
       - 8456:80
