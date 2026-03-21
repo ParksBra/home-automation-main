@@ -28,6 +28,14 @@ services:
     networks:
       - homeassistant_swag
       - seq_ingestion
+    healthcheck:
+      test: ["CMD-SHELL", " curl 0.0.0.0:5343 || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
+    labels:
+      - "autoheal=true"
 
   seq-gelf-input:
     image: datalust/seq-input-gelf:latest
@@ -78,6 +86,8 @@ services:
 
   mqtt:
     image: eclipse-mosquitto:latest
+    depends_on:
+      - seq-gelf-input
     container_name: mqtt
     environment:
       - "TZ={{ timezone }}"
