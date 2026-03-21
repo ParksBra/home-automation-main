@@ -71,6 +71,10 @@ services:
       - homeassistant_backend
       - homeassistant_swag
       - mqtt_connection
+    logging:
+      driver: gelf
+      options:
+        gelf-address: "udp://127.0.0.1:12201"
 
   mqtt:
     image: eclipse-mosquitto:latest
@@ -90,6 +94,10 @@ services:
     restart: unless-stopped
     healthcheck:
       test: ["CMD-SHELL", "netstat -tnlp | grep -q 1883; echo $?"]
+    logging:
+      driver: gelf
+      options:
+        gelf-address: "udp://127.0.0.1:12201"
 
   zigbee2mqtt:
     container_name: zigbee2mqtt
@@ -131,6 +139,10 @@ services:
       timeout: 10s
       retries: 3
       start_period: 10s
+    logging:
+      driver: gelf
+      options:
+        gelf-address: "udp://127.0.0.1:12201"
 
   govee2mqtt:
     image: ghcr.io/wez/govee2mqtt:latest
@@ -203,6 +215,10 @@ services:
       start_period: 10s
     networks:
       - homeassistant_swag
+    logging:
+      driver: gelf
+      options:
+        gelf-address: "udp://127.0.0.1:12201"
 
 networks:
   homeassistant_backend:
