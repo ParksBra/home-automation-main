@@ -70,7 +70,16 @@ http {
     }
 
     # Sets the path, format, and configuration for a buffered log write.
-    access_log /dev/stdout;
+    log_format gelf_json escape=json '{'
+      '"timestamp": "$time_iso8601", '
+      '"remote_addr": "$remote_addr", '
+      '"request": "$request", '
+      '"status": $status, '
+      '"body_bytes_sent": $body_bytes_sent, '
+      '"request_time": $request_time, '
+      '"http_user_agent": "$http_user_agent"'
+    '}'
+    access_log /dev/stdout gelf_json;
 
     # Includes virtual hosts configs.
     include /etc/nginx/http.d/*.conf;
