@@ -83,6 +83,9 @@ nut_users_upsmon_password: "{{ lookup('env', 'NUT_UPSD_UPSMON_USER_PASSWORD') | 
 nut_users_upsadmin_password: "{{ lookup('env', 'NUT_UPSD_UPSADMIN_USER_PASSWORD') | default('admin') }}"
 nut_upsd_port: 3493
 
+seq_subdomain: "seq"
+seq_mount_path: "{{ home_path }}/seq/data"
+
 swag_https_port: 443
 swag_http_port: 80
 swag_internal_cidrs:
@@ -98,6 +101,7 @@ swag_letsencrypt_email: "{{ lookup('env', 'SWAG_LETSENCRYPT_EMAIL') | default(''
 swag_subdomains:
   - "{{ homeassistant_subdomain }}"
   - "{{ zigbee2mqtt_subdomain }}"
+  - "{{ seq_subdomain }}"
 
 tailscale_repo_signing_key_url: "https://pkgs.tailscale.com/stable/{{ ansible_distribution | lower }}/{{ ansible_distribution_release | lower }}.noarmor.gpg"
 tailscale_repo_signing_key_file: "/usr/share/keyrings/tailscale-archive-keyring.gpg"
@@ -108,5 +112,3 @@ tailscale_address_cidr: "{{ tailscale_address | default('0.0.0.0') }}/32" # tail
 tailscale_advertise_tags:
   - "tag:home-server"
 
-seq_subdomain: "seq"
-seq_mount_path: "{{ home_path }}/seq/data"
