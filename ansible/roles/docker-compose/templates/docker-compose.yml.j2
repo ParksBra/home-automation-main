@@ -44,7 +44,7 @@ services:
   homeassistant:
     image: homeassistant/home-assistant:latest
     depends_on:
-      - seq
+      - seq-gelf-input
     container_name: homeassistant
     environment:
       - "TZ={{ timezone }}"
@@ -70,10 +70,6 @@ services:
       - homeassistant_swag
       - mqtt_connection
       - seq_ingestion
-    # logging:
-    #   driver: gelf
-    #   options:
-    #     gelf-address: "udp://seq:5341"
 
   mqtt:
     image: eclipse-mosquitto:latest
@@ -99,6 +95,7 @@ services:
     image: ghcr.io/koenkk/zigbee2mqtt:latest
     depends_on:
       - mqtt
+      - seq-gelf-input
     restart: unless-stopped
     volumes:
       - "{{ zigbee2mqtt_mount_path }}:/app/data:rw"
@@ -155,7 +152,7 @@ services:
       - "GOVEE_MQTT_PORT=1883"
       - "COLORBT_SHOW_HIDDEN=1"
     networks:
-      - govee2mqtt_host
+      # - govee2mqtt_host
       - homeassistant_govee2mqtt
       - mqtt_connection
       - seq_gelf_input
@@ -178,6 +175,7 @@ services:
       - seq
       - homeassistant
       - zigbee2mqtt
+      - seq-gelf-input
     cap_add:
       - NET_ADMIN
     environment:
@@ -206,10 +204,6 @@ services:
     networks:
       - homeassistant_swag
       - seq_ingestion
-    # logging:
-    #   driver: gelf
-    #   options:
-    #     gelf-address: "udp://seq:5341"
 
 networks:
   homeassistant_backend:
