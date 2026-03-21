@@ -29,9 +29,9 @@ services:
       - homeassistant_swag
       - seq_ingestion
 
-  seq-input-gelf:
+  seq-gelf-input:
     image: datalust/seq-input-gelf:latest
-    container_name: seq-input-gelf
+    container_name: seq-gelf-input
     depends_on:
       - seq
     environment:
@@ -140,7 +140,7 @@ services:
     restart: unless-stopped
     depends_on:
       - mqtt
-      - seq-input-gelf
+      - seq-gelf-input
     ports:
       - 8345:8056
     volumes:
@@ -169,7 +169,7 @@ services:
     logging:
       driver: gelf
       options:
-        gelf-address: "udp://seq-input-gelf:12201"
+        gelf-address: "udp://seq-gelf-input:12201"
 
   swag:
     image: ghcr.io/linuxserver/swag:latest
