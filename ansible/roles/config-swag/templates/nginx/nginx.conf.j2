@@ -12,6 +12,7 @@ include /config/nginx/worker_processes.conf;
 pcre_jit on;
 
 # Configures default error logger.
+error_log /config/log/nginx/error.log;
 error_log /dev/stderr warn;
 
 # Includes files with directives to load dynamic modules.
@@ -71,13 +72,13 @@ http {
 
     # Sets the path, format, and configuration for a buffered log write.
     log_format gelf_json escape=json '{'
-      '"timestamp": "$time_iso8601", '
-      '"remote_addr": "$remote_addr", '
-      '"request": "$request", '
-      '"status": $status, '
-      '"body_bytes_sent": $body_bytes_sent, '
-      '"request_time": $request_time, '
-      '"http_user_agent": "$http_user_agent"'
+        '"timestamp": "$time_iso8601", '
+        '"remote_addr": "$remote_addr", '
+        '"request": "$request", '
+        '"status": $status, '
+        '"body_bytes_sent": $body_bytes_sent, '
+        '"request_time": $request_time, '
+        '"http_user_agent": "$http_user_agent"'
     '}';
     access_log /dev/stdout gelf_json;
 
