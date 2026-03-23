@@ -26,8 +26,8 @@ services:
       - "{{ seq_mount_path }}:/data:rw"
     restart: unless-stopped
     networks:
-      - homeassistant_swag
-      - seq_ingestion
+      swag_proxy:
+      seq_ingestion:
     healthcheck:
       test: ["CMD-SHELL", "curl 0.0.0.0:5341 || exit 1"]
       interval: 30s
@@ -49,7 +49,7 @@ services:
       # GELF_ADDRESS: "127.0.0.1:12201/udp"
     restart: unless-stopped
     networks:
-      - seq_ingestion
+      seq_ingestion:
 
   homeassistant:
     image: homeassistant/home-assistant:latest
@@ -76,9 +76,9 @@ services:
     labels:
       - "autoheal=true"
     networks:
-      - homeassistant_backend
-      - homeassistant_swag
-      - mqtt_connection
+      homeassistant_backend:
+      swag_proxy:
+      mqtt_connection:
     logging:
       driver: gelf
       options:
@@ -98,12 +98,14 @@ services:
     volumes:
       - "{{ mqtt_mount_path }}:/mosquitto:rw"
     networks:
-      - mqtt_connection
+      mqtt_connection:
+        aliases:
+          - {{ mqtt_hostname }}
     labels:
       - "autoheal=true"
     restart: unless-stopped
     healthcheck:
-      test: ["CMD-SHELL", "netstat -tnlp | grep -q 1883; echo $?"]
+      test: ["CMD-SHELL", "netstat -tnlp | grep -q {{ mqtt_port }}; echo $?"]
     logging:
       driver: gelf
       options:
@@ -127,7 +129,7 @@ services:
       - "TZ={{ timezone }}"
       - "PUID={{ service_uid }}"
       - "PGID={{ service_gid }}"
-      - "ZIGBEE2MQTT_CONFIG_MQTT_SERVER=mqtt://mqtt:1883"
+      - "ZIGBEE2MQTT_CONFIG_MQTT_SERVER=mqtt://{{ mqtt_hostname }}:{{ mqtt_port }}"
       - "ZIGBEE2MQTT_CONFIG_MQTT_VERSION={{ mqtt_version }}"
       - "ZIGBEE2MQTT_CONFIG_MQTT_BASE_TOPIC={{ zigbee2mqtt_base_topic }}"
       - "ZIGBEE2MQTT_CONFIG_SERIAL_PORT={{ zigbee2mqtt_serial_port }}"
@@ -138,9 +140,9 @@ services:
       - "ZIGBEE2MQTT_CONFIG_FRONTEND_PORT=8080"
       - "ZIGBEE2MQTT_CONFIG_HOMEASSISTANT_ENABLED=true"
     networks:
-      - homeassistant_zigbee2mqtt
-      - mqtt_connection
-      - homeassistant_swag
+      homeassistant_zigbee2mqtt:
+      mqtt_connection:
+      swag_proxy:
     labels:
       - "autoheal=true"
     healthcheck:
@@ -171,13 +173,13 @@ services:
       - "PGID={{ service_gid }}"
       - "GOVEE_TEMPERATURE_SCALE={{ govee2mqtt_temperature_scale }}"
       - "RUST_LOG_STYLE=always"
-      - "GOVEE_MQTT_HOST=mqtt"
-      - "GOVEE_MQTT_PORT=1883"
+      - "GOVEE_MQTT_HOST={{ mqtt_hostname }}"
+      - "GOVEE_MQTT_PORT={{ mqtt_port }}"
       - "COLORBT_SHOW_HIDDEN=1"
     networks:
-      - govee2mqtt_host
-      - homeassistant_govee2mqtt
-      - mqtt_connection
+      govee2mqtt_host:
+      homeassistant_govee2mqtt:
+      mqtt_connection:
     # labels:
     #   - "autoheal=true"
     # healthcheck:
@@ -224,7 +226,7 @@ services:
       retries: 3
       start_period: 10s
     networks:
-      - homeassistant_swag
+      swag_proxy:
     logging:
       driver: gelf
       options:
@@ -233,7 +235,7 @@ services:
 networks:
   homeassistant_backend:
     driver: bridge
-  homeassistant_swag:
+  swag_proxy:
     driver: bridge
   homeassistant_zigbee2mqtt:
     driver: bridge

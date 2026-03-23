@@ -71,7 +71,9 @@ govee2mqtt_temperature_scale: "F"
 govee2mqtt_ip_range_cidr: "192.168.50.135/32"
 
 mqtt_mount_path: "{{ home_path }}/mqtt5"
-mqtt_version: "5"
+mqtt_version: "4"
+mqtt_hostname: "mqtt"
+mqtt_port: 1883
 
 nut_upsmon_maxretry: 5
 nut_upsmon_device_name: "cyberpower"
