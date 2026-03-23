@@ -29,7 +29,7 @@ services:
       - homeassistant_swag
       - seq_ingestion
     healthcheck:
-      test: ["CMD-SHELL", " curl 0.0.0.0:5343 || exit 1"]
+      test: ["CMD-SHELL", "curl 0.0.0.0:5341 || exit 1"]
       interval: 30s
       timeout: 10s
       retries: 3
