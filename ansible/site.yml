@@ -20,7 +20,6 @@
   hosts: all
   roles:
     - config-homeassistant
-    - homeassistant-wol
     - config-mosquitto
     - config-swag
   become: true
