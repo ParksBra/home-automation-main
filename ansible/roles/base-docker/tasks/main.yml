@@ -20,6 +20,3 @@
     name: docker
     enabled: true
     state: started
-
-- name: Run docker compose
-  ansible.builtin.include_tasks: compose_changes.yml

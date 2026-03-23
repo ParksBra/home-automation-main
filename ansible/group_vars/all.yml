@@ -35,9 +35,6 @@ docker_network_interface: "eth0"
 local_lan_cidr: "{{ lookup('env', 'LOCAL_LAN_CIDR') | default('192.168.0.0/16') }}"
 local_lan_default_gateway: "{{ lookup('env', 'LOCAL_LAN_DEFAULT_GATEWAY') | default('192.168.0.1') }}"
 
-swag_homeassistant_external_port: 443
-swag_homeassistant_internal_port: 8123
-
 homeassistant_mount_path: "{{ home_path }}/homeassistant/data"
 homeassistant_backup_disk_path: "{{ homeassistant_mount_path }}/backups"
 homeassistant_subdomain: "ha"
@@ -67,7 +64,6 @@ zigbee2mqtt_serial_adapter: "ember"
 zigbee2mqtt_serial_baudrate: 460800
 zigbee2mqtt_serial_rtscts: true
 zigbee2mqtt_frontend_enabled: true
-zigbee2mqtt_frontend_port: 8234
 zigbee2mqtt_subdomain: "z2m"
 
 govee2mqtt_mount_path: "{{ home_path }}/govee2mqtt/data"
@@ -75,7 +71,9 @@ govee2mqtt_temperature_scale: "F"
 govee2mqtt_ip_range_cidr: "192.168.50.135/32"
 
 mqtt_mount_path: "{{ home_path }}/mqtt5"
-mqtt_version: "5"
+mqtt_version: "4"
+mqtt_hostname: "mqtt"
+mqtt_port: 1883
 
 nut_upsmon_maxretry: 5
 nut_upsmon_device_name: "cyberpower"
@@ -87,6 +85,11 @@ nut_users_upsmon_password: "{{ lookup('env', 'NUT_UPSD_UPSMON_USER_PASSWORD') | 
 nut_users_upsadmin_password: "{{ lookup('env', 'NUT_UPSD_UPSADMIN_USER_PASSWORD') | default('admin') }}"
 nut_upsd_port: 3493
 
+seq_subdomain: "seq"
+seq_mount_path: "{{ home_path }}/seq/data"
+
+swag_https_port: 443
+swag_http_port: 80
 swag_internal_cidrs:
   - "{{ local_lan_cidr }}" # Local Lan
   - "{{ tailscale_address_cidr }}" # Tailscale network
@@ -100,6 +103,7 @@ swag_letsencrypt_email: "{{ lookup('env', 'SWAG_LETSENCRYPT_EMAIL') | default(''
 swag_subdomains:
   - "{{ homeassistant_subdomain }}"
   - "{{ zigbee2mqtt_subdomain }}"
+  - "{{ seq_subdomain }}"
 
 tailscale_repo_signing_key_url: "https://pkgs.tailscale.com/stable/{{ ansible_distribution | lower }}/{{ ansible_distribution_release | lower }}.noarmor.gpg"
 tailscale_repo_signing_key_file: "/usr/share/keyrings/tailscale-archive-keyring.gpg"
@@ -109,3 +113,4 @@ tailscale_address: "0.0.0.0" # This will be set during tailscale role execution
 tailscale_address_cidr: "{{ tailscale_address | default('0.0.0.0') }}/32" # tailscale_address will be set during tailscale role execution
 tailscale_advertise_tags:
   - "tag:home-server"
+

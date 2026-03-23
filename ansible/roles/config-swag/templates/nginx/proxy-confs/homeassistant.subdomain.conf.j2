@@ -1,6 +1,6 @@
 server {
-    listen {{ swag_homeassistant_external_port }} ssl;
-    listen [::]:{{ swag_homeassistant_external_port }} ssl;
+    listen {{ swag_https_port }} ssl;
+    listen [::]:{{ swag_https_port }} ssl;
     server_name {{ homeassistant_subdomain }}.{{ swag_domain }};
     include /config/nginx/ssl.conf;
     client_max_body_size 0;
@@ -21,10 +21,11 @@ server {
         proxy_pass $upstream_proto://$upstream_app:$upstream_port;
     }
 }
+
 server {
-    listen {{ swag_homeassistant_internal_port }};
-    listen [::]:{{ swag_homeassistant_internal_port }};
-    server_name {{ ansible_host }};
+    listen {{ swag_http_port }};
+    listen [::]:{{ swag_http_port }};
+    server_name {{ ansible_host }}, {{ homeassistant_subdomain }}.{{ swag_domain }};
 {% for cidr in swag_internal_cidrs %}
     allow {{ cidr }};
 {% endfor %}

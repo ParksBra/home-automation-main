@@ -29,3 +29,6 @@
 
 - name: Flush handlers
   ansible.builtin.meta: flush_handlers
+
+- name: Configure Wake-on-LAN pipe and service
+  import_tasks: configure_wolpipe.yml

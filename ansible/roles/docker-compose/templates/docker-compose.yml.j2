@@ -10,14 +10,59 @@ services:
     restart: always
 
 {% endif %}
+  seq:
+    image: datalust/seq:latest
+    container_name: seq
+    environment:
+      - "TZ={{ timezone }}"
+      - "PUID={{ service_uid }}"
+      - "PGID={{ service_gid }}"
+      - "ACCEPT_EULA=Y"
+      - "SEQ_API_CANONICALURI=https://{{ seq_subdomain }}.{{ swag_domain }}"
+      - "SEQ_FIRSTRUN_NOAUTHENTICATION=true"
+    ports:
+      - 8456:80
+    volumes:
+      - "{{ seq_mount_path }}:/data:rw"
+    restart: unless-stopped
+    networks:
+      swag_proxy:
+      seq_ingestion:
+    healthcheck:
+      test: ["CMD-SHELL", "curl 0.0.0.0:5341 || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
+    labels:
+      - "autoheal=true"
+
+  seq-gelf-input:
+    image: datalust/seq-input-gelf:latest
+    container_name: seq-gelf-input
+    depends_on:
+      - seq
+    ports:
+      - 12201:12201/udp
+    environment:
+      SEQ_ADDRESS: "http://seq:5341"
+      # GELF_ADDRESS: "127.0.0.1:12201/udp"
+    restart: unless-stopped
+    networks:
+      seq_ingestion:
+
   homeassistant:
     image: homeassistant/home-assistant:latest
+    depends_on:
+      - seq-gelf-input
     container_name: homeassistant
     environment:
       - "TZ={{ timezone }}"
       - "PUID={{ service_uid }}"
       - "PGID={{ service_gid }}"
       - "DISABLE_JEMALLOC=true"
+    ports:
+      - 8123:8123
     healthcheck:
       test: ["CMD-SHELL", "wget --no-verbose --tries=1 --spider http://0.0.0.0:8123/manifest.json || exit 1"]
       interval: 30s
@@ -31,12 +76,18 @@ services:
     labels:
       - "autoheal=true"
     networks:
-      - homeassistant_backend
-      - homeassistant_swag
-      - mqtt_connection
+      homeassistant_backend:
+      swag_proxy:
+      mqtt_connection:
+    logging:
+      driver: gelf
+      options:
+        gelf-address: "udp://127.0.0.1:12201"
 
   mqtt:
     image: eclipse-mosquitto:latest
+    depends_on:
+      - seq-gelf-input
     container_name: mqtt
     environment:
       - "TZ={{ timezone }}"
@@ -47,18 +98,25 @@ services:
     volumes:
       - "{{ mqtt_mount_path }}:/mosquitto:rw"
     networks:
-      - mqtt_connection
+      mqtt_connection:
+        aliases:
+          - {{ mqtt_hostname }}
     labels:
       - "autoheal=true"
     restart: unless-stopped
     healthcheck:
-      test: ["CMD-SHELL", "netstat -tnlp | grep -q 1883; echo $?"]
+      test: ["CMD-SHELL", "netstat -tnlp | grep -q {{ mqtt_port }}; echo $?"]
+    logging:
+      driver: gelf
+      options:
+        gelf-address: "udp://127.0.0.1:12201"
 
   zigbee2mqtt:
     container_name: zigbee2mqtt
     image: ghcr.io/koenkk/zigbee2mqtt:latest
     depends_on:
       - mqtt
+      - seq-gelf-input
     restart: unless-stopped
     volumes:
       - "{{ zigbee2mqtt_mount_path }}:/app/data:rw"
@@ -66,12 +124,12 @@ services:
     devices:
       - "{{ zigbee2mqtt_serial_port }}:{{ zigbee2mqtt_serial_port }}"
     ports:
-      - "{{ zigbee2mqtt_frontend_port }}:8080"
+      - 8234:8080
     environment:
       - "TZ={{ timezone }}"
       - "PUID={{ service_uid }}"
       - "PGID={{ service_gid }}"
-      - "ZIGBEE2MQTT_CONFIG_MQTT_SERVER=mqtt://mqtt:1883"
+      - "ZIGBEE2MQTT_CONFIG_MQTT_SERVER=mqtt://{{ mqtt_hostname }}:{{ mqtt_port }}"
       - "ZIGBEE2MQTT_CONFIG_MQTT_VERSION={{ mqtt_version }}"
       - "ZIGBEE2MQTT_CONFIG_MQTT_BASE_TOPIC={{ zigbee2mqtt_base_topic }}"
       - "ZIGBEE2MQTT_CONFIG_SERIAL_PORT={{ zigbee2mqtt_serial_port }}"
@@ -82,9 +140,9 @@ services:
       - "ZIGBEE2MQTT_CONFIG_FRONTEND_PORT=8080"
       - "ZIGBEE2MQTT_CONFIG_HOMEASSISTANT_ENABLED=true"
     networks:
-      - homeassistant_zigbee2mqtt
-      - mqtt_connection
-      - homeassistant_swag
+      homeassistant_zigbee2mqtt:
+      mqtt_connection:
+      swag_proxy:
     labels:
       - "autoheal=true"
     healthcheck:
@@ -93,6 +151,10 @@ services:
       timeout: 10s
       retries: 3
       start_period: 10s
+    logging:
+      driver: gelf
+      options:
+        gelf-address: "udp://127.0.0.1:12201"
 
   govee2mqtt:
     image: ghcr.io/wez/govee2mqtt:latest
@@ -100,6 +162,9 @@ services:
     restart: unless-stopped
     depends_on:
       - mqtt
+      - seq-gelf-input
+    ports:
+      - 8345:8056
     volumes:
       - "{{ govee2mqtt_mount_path }}:/data:rw"
     environment:
@@ -108,13 +173,13 @@ services:
       - "PGID={{ service_gid }}"
       - "GOVEE_TEMPERATURE_SCALE={{ govee2mqtt_temperature_scale }}"
       - "RUST_LOG_STYLE=always"
-      - "GOVEE_MQTT_HOST=mqtt"
-      - "GOVEE_MQTT_PORT=1883"
+      - "GOVEE_MQTT_HOST={{ mqtt_hostname }}"
+      - "GOVEE_MQTT_PORT={{ mqtt_port }}"
       - "COLORBT_SHOW_HIDDEN=1"
     networks:
-      - govee2mqtt_host
-      - homeassistant_govee2mqtt
-      - mqtt_connection
+      govee2mqtt_host:
+      homeassistant_govee2mqtt:
+      mqtt_connection:
     # labels:
     #   - "autoheal=true"
     # healthcheck:
@@ -122,10 +187,19 @@ services:
     #   interval: 30s
     #   timeout: 10s
     #   retries: 3
+    # logging:
+    #   driver: gelf
+    #   options:
+    #     gelf-address: "udp://127.0.0.1:12201"
 
   swag:
     image: ghcr.io/linuxserver/swag:latest
     container_name: swag
+    depends_on:
+      - seq
+      - homeassistant
+      - zigbee2mqtt
+      - seq-gelf-input
     cap_add:
       - NET_ADMIN
     environment:
@@ -140,24 +214,28 @@ services:
     volumes:
       - "{{ swag_mount_path }}:/config:rw"
     ports:
-      - "{{ swag_homeassistant_external_port }}:{{ swag_homeassistant_external_port }}"
-      - "{{ swag_homeassistant_internal_port }}:{{ swag_homeassistant_internal_port }}"
+      - "{{ swag_https_port }}:{{ swag_https_port }}"
+      - "{{ swag_http_port }}:{{ swag_http_port }}"
     restart: unless-stopped
     labels:
       - "autoheal=true"
     healthcheck:
-      test: ['CMD-SHELL', 'netstat -tnlp | grep -q 443; echo $?']
+      test: ['CMD-SHELL', 'netstat -tnlp | grep -q {{ swag_https_port }}; echo $?']
       interval: 30s
       timeout: 10s
       retries: 3
       start_period: 10s
     networks:
-      - homeassistant_swag
+      swag_proxy:
+    logging:
+      driver: gelf
+      options:
+        gelf-address: "udp://127.0.0.1:12201"
 
 networks:
   homeassistant_backend:
     driver: bridge
-  homeassistant_swag:
+  swag_proxy:
     driver: bridge
   homeassistant_zigbee2mqtt:
     driver: bridge
@@ -173,4 +251,6 @@ networks:
           gateway: {{ local_lan_default_gateway }}
           ip_range: {{ govee2mqtt_ip_range_cidr }}
   mqtt_connection:
+    driver: bridge
+  seq_ingestion:
     driver: bridge
