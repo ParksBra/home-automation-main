@@ -25,6 +25,7 @@ service_gid: 1001
 timezone: "America/Los_Angeles"
 
 home_path: "/home/{{ service_user }}"
+backup_path: "{{ home_path }}/backups"
 ansible_home_path: "/home/{{ ansible_user }}"
 
 docker_compose_path: "{{ ansible_home_path }}/docker"
@@ -36,7 +37,7 @@ local_lan_cidr: "{{ lookup('env', 'LOCAL_LAN_CIDR') | default('192.168.0.0/16') 
 local_lan_default_gateway: "{{ lookup('env', 'LOCAL_LAN_DEFAULT_GATEWAY') | default('192.168.0.1') }}"
 
 homeassistant_mount_path: "{{ home_path }}/homeassistant/data"
-homeassistant_backup_disk_path: "{{ homeassistant_mount_path }}/backups"
+homeassistant_backup_disk_path: "{{ backup_path }}/homeassistant"
 homeassistant_subdomain: "ha"
 homeassistant_log_level: "info"
 homeassistant_enabled_configurations:
@@ -57,7 +58,7 @@ homeassistant_enable_my: true
 homeassistant_enable_python_script: true
 
 zigbee2mqtt_mount_path: "{{ home_path }}/zigbee2mqtt/data"
-zigbee2mqtt_backup_disk_path: "{{ zigbee2mqtt_mount_path }}/backups"
+zigbee2mqtt_backup_disk_path: "{{ backup_path }}/zigbee2mqtt"
 zigbee2mqtt_base_topic: "zigbee2mqtt"
 zigbee2mqtt_serial_port: "/dev/ttyACM0"
 zigbee2mqtt_serial_adapter: "ember"
@@ -67,10 +68,12 @@ zigbee2mqtt_frontend_enabled: true
 zigbee2mqtt_subdomain: "z2m"
 
 govee2mqtt_mount_path: "{{ home_path }}/govee2mqtt/data"
+govee2mqtt_backup_disk_path: "{{ backup_path }}/govee2mqtt"
 govee2mqtt_temperature_scale: "F"
 govee2mqtt_ip_range_cidr: "192.168.50.135/32"
 
 mqtt_mount_path: "{{ home_path }}/mqtt5"
+mqtt_backup_disk_path: "{{ backup_path }}/mqtt"
 mqtt_version: "4"
 mqtt_hostname: "mqtt"
 mqtt_port: 1883
@@ -87,6 +90,7 @@ nut_upsd_port: 3493
 
 seq_subdomain: "seq"
 seq_mount_path: "{{ home_path }}/seq/data"
+seq_backup_disk_path: "{{ backup_path }}/seq"
 seq_gelf_input_port: 12201
 seq_gelf_input_address: "udp://127.0.0.1:{{ seq_gelf_input_port }}"
 
@@ -115,3 +119,10 @@ tailscale_address: "0.0.0.0" # This will be set during tailscale role execution
 tailscale_address_cidr: "{{ tailscale_address | default('0.0.0.0') }}/32" # tailscale_address will be set during tailscale role execution
 tailscale_advertise_tags:
   - "tag:home-server"
+
+backup_mapping:
+  "{{ homeassistant_mount_path }}": "{{ homeassistant_backup_disk_path }}"
+  "{{ zigbee2mqtt_mount_path }}": "{{ zigbee2mqtt_backup_disk_path }}"
+  "{{ govee2mqtt_mount_path }}": "{{ govee2mqtt_backup_disk_path }}"
+  "{{ mqtt_mount_path }}": "{{ mqtt_backup_disk_path }}"
+  "{{ seq_mount_path }}": "{{ seq_backup_disk_path }}"

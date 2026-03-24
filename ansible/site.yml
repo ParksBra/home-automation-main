@@ -21,6 +21,8 @@
   roles:
     - config-homeassistant
     - config-mosquitto
+    - config-zigbee2mqtt
     - config-swag
+    - config-seq
   become: true
   become_user: root

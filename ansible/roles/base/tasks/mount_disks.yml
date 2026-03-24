@@ -17,7 +17,7 @@
 
 - name: Make sure mount points exist
   ansible.builtin.file:
-    dest: "{{ homeassistant_backup_disk_path }}"
+    dest: "{{ backup_path }}"
     state: directory
     recurse: true
 
@@ -29,5 +29,5 @@
     backup: true
     opts: defaults,nofail
     fstype: ext4
-    path: "{{ homeassistant_backup_disk_path }}"
+    path: "{{ backup_path }}"
     state: mounted

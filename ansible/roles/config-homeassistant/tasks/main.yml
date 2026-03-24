@@ -7,6 +7,12 @@
     recurse: true
   changed_when: false
 
+- name: Ensure backup path exists
+  ansible.builtin.file:
+    dest: "{{ homeassistant_backup_disk_path }}"
+    state: directory
+    recurse: true
+
 - name: Ensure all sub-config files exist
   ansible.builtin.file:
     name: "{{ homeassistant_mount_path }}/{{ item }}s.yaml"

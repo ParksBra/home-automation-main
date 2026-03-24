@@ -4,6 +4,17 @@ apt full-upgrade -y
 
 # Update Docker images and restart containers
 cd {{ docker_compose_path }}
+docker compose down # Stop containers to allow for clean image updates
+sleep 5 # Wait for containers to stop before proceeding
+
+# Backup current configuration before updating images
+{% for mount_path, backup_path in backup_mapping.items() %}
+echo "Backing up {{ mount_path }} to {{ backup_path }}..."
+rsync -acrv --delete "{{ mount_path }}/" "{{ backup_path }}/"
+{% endfor %}
+echo "Backup complete. Proceeding with image updates..."
+
+# Update Docker images and restart containers
 docker compose pull # Update current images
 docker compose up -d --force-recreate --remove-orphans # Apply updated images
 echo "Cleaning old orphaned images in 15 seconds..."
