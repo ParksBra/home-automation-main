@@ -12,7 +12,7 @@ sleep 5 # Wait for containers to stop before proceeding
 # Backup for {{ service }}
 echo "Backing up {{ service }}: '{{ backup_attrs.src }}' to '{{ backup_attrs.dest }}'..."
 mkdir -p "{{ backup_attrs.dest }}/patching_backup" # Ensure backup directory exists
-tar -czf "{{ backup_attrs.dest }}/patching_backup/{{ backup_attrs.src | basename }}_backup_$(date +%Y%m%d%H%M%S).tgz" {% for exclude in backup_attrs.exclude %} --exclude="{{ exclude }}"{% endfor %}-C "{{ backup_attrs.src }}" . # Create timestamped backup
+tar -czf "{{ backup_attrs.dest }}/patching_backup/{{ backup_attrs.src | basename }}_backup_$(date +%Y%m%d%H%M%S).tgz" {% for exclude in backup_attrs.exclude %}--exclude="{{ exclude }}" {% endfor %}-C "{{ backup_attrs.src }}" . # Create timestamped backup
 find "{{ backup_attrs.dest }}/patching_backup" -type f -name "*.tgz" -printf '%T+ %p\n' | sort -r | awk 'NR>{{ backup_attrs.quantity }}{print $2}' | xargs -r rm -- # Remove old backups, keeping only the specified number of most recent
 
 {% endfor %}
