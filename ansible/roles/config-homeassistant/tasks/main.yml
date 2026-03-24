@@ -11,7 +11,10 @@
   ansible.builtin.file:
     dest: "{{ homeassistant_backup_disk_path }}"
     state: directory
+    owner: "{{ service_user }}"
+    group: "{{ service_group }}"
     recurse: true
+  changed_when: false
 
 - name: Ensure all sub-config files exist
   ansible.builtin.file:

@@ -5,3 +5,4 @@
     owner: "{{ service_user }}"
     group: "{{ service_group }}"
     recurse: true
+  changed_when: false
