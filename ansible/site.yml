@@ -22,6 +22,7 @@
     - config-homeassistant
     - config-mosquitto
     - config-zigbee2mqtt
+    - config-govee2mqtt
     - config-swag
     - config-seq
   become: true
