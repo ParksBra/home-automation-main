@@ -70,8 +70,8 @@ services:
       retries: 3
       start_period: 10s
     volumes:
-      - "{{ homeassistant_mount_path }}:/config:rw"
       - "{{ homeassistant_backup_disk_path }}:/config/backups:rw"
+      - "{{ homeassistant_mount_path }}:/config:rw"
       - /run/dbus:/run/dbus:ro
     restart: unless-stopped
     labels:
