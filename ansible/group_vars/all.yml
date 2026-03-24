@@ -115,4 +115,3 @@ tailscale_address: "0.0.0.0" # This will be set during tailscale role execution
 tailscale_address_cidr: "{{ tailscale_address | default('0.0.0.0') }}/32" # tailscale_address will be set during tailscale role execution
 tailscale_advertise_tags:
   - "tag:home-server"
-
