@@ -10,6 +10,14 @@
     - "{{ swag_mount_path }}/dns-conf"
     - "{{ swag_mount_path }}/etc/letsencrypt"
 
+- name: Ensure backup path exists
+  ansible.builtin.file:
+    dest: "{{ swag_backup_disk_path }}"
+    state: directory
+    owner: "{{ service_user }}"
+    group: "{{ service_group }}"
+    recurse: true
+
 - name: Configure SWAG Cloudflare DNS plugin
   ansible.builtin.template:
     src: "dns-conf/cloudflare.ini.j2"

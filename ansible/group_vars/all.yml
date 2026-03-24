@@ -103,6 +103,7 @@ swag_internal_cidrs:
   - "127.0.0.1/32" # Docker host localhost
 swag_domain: "{{ lookup('env', 'EXTERNAL_DOMAIN') | default('localhost') }}"
 swag_mount_path: "{{ home_path }}/swag/data"
+swag_backup_disk_path: "{{ backup_path }}/swag"
 swag_validation_method: "dns"
 swag_cloudflare_api_token: "{{ lookup('env', 'SWAG_CLOUDFLARE_API_TOKEN') | default('token') }}"
 swag_letsencrypt_email: "{{ lookup('env', 'SWAG_LETSENCRYPT_EMAIL') | default('') }}"
@@ -125,19 +126,36 @@ backup_mapping:
     src: "{{ homeassistant_mount_path }}"
     dest: "{{ homeassistant_backup_disk_path }}"
     quantity: 4
+    exclude:
+      - "home-assistant.log*"
+      - "backups"
   mqtt:
     src: "{{ mqtt_mount_path }}"
     dest: "{{ mqtt_backup_disk_path }}"
     quantity: 4
+    exclude:
+      - "log"
   zigbee2mqtt:
     src: "{{ zigbee2mqtt_mount_path }}"
     dest: "{{ zigbee2mqtt_backup_disk_path }}"
     quantity: 4
+    exclude:
+      - "log"
   govee2mqtt:
     src: "{{ govee2mqtt_mount_path }}"
     dest: "{{ govee2mqtt_backup_disk_path }}"
     quantity: 4
+    exclude:
+      - "log"
   seq:
     src: "{{ seq_mount_path }}"
     dest: "{{ seq_backup_disk_path }}"
     quantity: 2
+    exclude:
+      - "logs"
+  swag:
+    src: "{{ swag_mount_path }}"
+    dest: "{{ swag_backup_disk_path }}"
+    quantity: 4
+    exclude:
+      - "log"
