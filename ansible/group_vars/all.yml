@@ -121,8 +121,23 @@ tailscale_advertise_tags:
   - "tag:home-server"
 
 backup_mapping:
-  "{{ homeassistant_mount_path }}": "{{ homeassistant_backup_disk_path }}"
-  "{{ zigbee2mqtt_mount_path }}": "{{ zigbee2mqtt_backup_disk_path }}"
-  "{{ govee2mqtt_mount_path }}": "{{ govee2mqtt_backup_disk_path }}"
-  "{{ mqtt_mount_path }}": "{{ mqtt_backup_disk_path }}"
-  "{{ seq_mount_path }}": "{{ seq_backup_disk_path }}"
+  homeassistant:
+    src: "{{ homeassistant_mount_path }}"
+    dest: "{{ homeassistant_backup_disk_path }}"
+    quantity: 4
+  mqtt:
+    src: "{{ mqtt_mount_path }}"
+    dest: "{{ mqtt_backup_disk_path }}"
+    quantity: 4
+  zigbee2mqtt:
+    src: "{{ zigbee2mqtt_mount_path }}"
+    dest: "{{ zigbee2mqtt_backup_disk_path }}"
+    quantity: 4
+  govee2mqtt:
+    src: "{{ govee2mqtt_mount_path }}"
+    dest: "{{ govee2mqtt_backup_disk_path }}"
+    quantity: 4
+  seq:
+    src: "{{ seq_mount_path }}"
+    dest: "{{ seq_backup_disk_path }}"
+    quantity: 2

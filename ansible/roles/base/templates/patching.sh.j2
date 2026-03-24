@@ -8,9 +8,11 @@ docker compose down # Stop containers to allow for clean image updates
 sleep 5 # Wait for containers to stop before proceeding
 
 # Backup current configuration before updating images
-{% for mount_path, backup_path in backup_mapping.items() %}
-echo "Backing up {{ mount_path }} to {{ backup_path }}..."
-rsync -acrv --delete "{{ mount_path }}/" "{{ backup_path }}/"
+{% for service, backup_attrs in backup_mapping.items() %}
+echo "Backing up {{ service }}: '{{ backup_attrs.src }}' to '{{ backup_attrs.dest }}'..."
+mkdir -p "{{ backup_attrs.dest }}/patching_backup" # Ensure backup directory exists
+tar -czf "{{ backup_attrs.dest }}/patching_backup/{{ backup_attrs.src | basename }}_backup_$(date +%Y%m%d%H%M%S).tgz" -C "{{ backup_attrs.src }}" . # Create timestamped backup
+find "{{ backup_attrs.dest }}/patching_backup" -type f -name "*.tgz" -printf '%T+ %p\n' | sort -r | awk 'NR>{{ backup_attrs.quantity }}{print $2}' | xargs -r rm -- # Remove old backups, keeping only the specified number of most recent
 {% endfor %}
 echo "Backup of {{ backup_mapping.keys() | length }} services complete. Proceeding with image updates..."
 
