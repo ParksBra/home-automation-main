@@ -43,7 +43,7 @@ services:
     depends_on:
       - seq
     ports:
-      - 12201:12201/udp
+      - "{{ seq_gelf_input_port }}:12201/udp"
     environment:
       SEQ_ADDRESS: "http://seq:5341"
       # GELF_ADDRESS: "127.0.0.1:12201/udp"
@@ -70,6 +70,7 @@ services:
       retries: 3
       start_period: 10s
     volumes:
+      - "{{ homeassistant_backup_disk_path }}:/config/backups:rw"
       - "{{ homeassistant_mount_path }}:/config:rw"
       - /run/dbus:/run/dbus:ro
     restart: unless-stopped
@@ -82,7 +83,7 @@ services:
     logging:
       driver: gelf
       options:
-        gelf-address: "udp://127.0.0.1:12201"
+        gelf-address: "{{ seq_gelf_input_address }}"
 
   mqtt:
     image: eclipse-mosquitto:latest
@@ -109,7 +110,7 @@ services:
     logging:
       driver: gelf
       options:
-        gelf-address: "udp://127.0.0.1:12201"
+        gelf-address: "{{ seq_gelf_input_address }}"
 
   zigbee2mqtt:
     container_name: zigbee2mqtt
@@ -154,9 +155,9 @@ services:
     logging:
       driver: gelf
       options:
-        gelf-address: "udp://127.0.0.1:12201"
+        gelf-address: "{{ seq_gelf_input_address }}"
 
-  govee2mqtt:
+  {# govee2mqtt:
     image: ghcr.io/wez/govee2mqtt:latest
     container_name: govee2mqtt
     restart: unless-stopped
@@ -190,7 +191,7 @@ services:
     # logging:
     #   driver: gelf
     #   options:
-    #     gelf-address: "udp://127.0.0.1:12201"
+    #     gelf-address: "{{ seq_gelf_input_address }}" #}
 
   swag:
     image: ghcr.io/linuxserver/swag:latest
@@ -230,7 +231,7 @@ services:
     logging:
       driver: gelf
       options:
-        gelf-address: "udp://127.0.0.1:12201"
+        gelf-address: "{{ seq_gelf_input_address }}"
 
 networks:
   homeassistant_backend:

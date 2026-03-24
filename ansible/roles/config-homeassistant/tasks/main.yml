@@ -7,6 +7,15 @@
     recurse: true
   changed_when: false
 
+- name: Ensure backup path exists
+  ansible.builtin.file:
+    dest: "{{ homeassistant_backup_disk_path }}"
+    state: directory
+    owner: "{{ service_user }}"
+    group: "{{ service_group }}"
+    recurse: true
+  changed_when: false
+
 - name: Ensure all sub-config files exist
   ansible.builtin.file:
     name: "{{ homeassistant_mount_path }}/{{ item }}s.yaml"
@@ -31,4 +40,4 @@
   ansible.builtin.meta: flush_handlers
 
 - name: Configure Wake-on-LAN pipe and service
-  import_tasks: configure_wolpipe.yml
+  ansible.builtin.import_tasks: configure_wolpipe.yml

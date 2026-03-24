@@ -1,3 +1,21 @@
+- name: Ensure config path exists
+  ansible.builtin.file:
+    name: "{{ mqtt_mount_path }}/config"
+    state: directory
+    owner: "{{ service_user }}"
+    group: "{{ service_group }}"
+    recurse: true
+  changed_when: false
+
+- name: Ensure backup path exists
+  ansible.builtin.file:
+    dest: "{{ mqtt_backup_disk_path }}"
+    state: directory
+    owner: "{{ service_user }}"
+    group: "{{ service_group }}"
+    recurse: true
+  changed_when: false
+
 - name: Apply mosquitto configuration
   ansible.builtin.template:
     src: mosquitto.conf.j2

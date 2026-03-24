@@ -1,0 +1,8 @@
+- name: Ensure backup path exists
+  ansible.builtin.file:
+    dest: "{{ zigbee2mqtt_backup_disk_path }}"
+    state: directory
+    owner: "{{ service_user }}"
+    group: "{{ service_group }}"
+    recurse: true
+  changed_when: false
