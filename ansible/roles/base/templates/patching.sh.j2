@@ -12,7 +12,7 @@ sleep 5 # Wait for containers to stop before proceeding
 echo "Backing up {{ mount_path }} to {{ backup_path }}..."
 rsync -acrv --delete "{{ mount_path }}/" "{{ backup_path }}/"
 {% endfor %}
-echo "Backup complete. Proceeding with image updates..."
+echo "Backup of {{ backup_mapping.keys() | length }} services complete. Proceeding with image updates..."
 
 # Update Docker images and restart containers
 docker compose pull # Update current images
