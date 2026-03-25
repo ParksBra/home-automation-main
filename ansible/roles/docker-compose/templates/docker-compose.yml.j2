@@ -24,6 +24,7 @@ services:
       - 8456:80
     volumes:
       - "{{ seq_mount_path }}:/data:rw"
+      - "{{ seq_backup_disk_path }}:/data/backups:rw"
     restart: unless-stopped
     networks:
       swag_proxy:

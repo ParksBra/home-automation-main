@@ -153,6 +153,7 @@ backup_mapping:
     quantity: 2
     exclude:
       - "logs"
+      - "backups"
   swag:
     src: "{{ swag_mount_path }}"
     dest: "{{ swag_backup_disk_path }}"
