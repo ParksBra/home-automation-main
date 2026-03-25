@@ -1,7 +1,6 @@
 server {
-    listen {{ tailscale_address }}:{{ swag_https_port }} ssl;
-    listen {{ ansible_default_ipv4.address }}:{{ swag_https_port }} ssl;
-    listen 127.0.0.1:{{ swag_https_port }} ssl;
+    listen {{ swag_https_port }} ssl;
+    listen [::]:{{ swag_https_port }} ssl;
 
     server_name {{ zigbee2mqtt_subdomain }}.{{ swag_domain }};
 {% for cidr in swag_internal_cidrs %}
