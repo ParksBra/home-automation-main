@@ -3,16 +3,18 @@ services:
   autoheal:
     image: willfarrell/autoheal:latest
     container_name: autoheal
+    restart: always
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
     environment:
-      - AUTOHEAL_CONTAINER_LABEL=all
-    restart: always
+      AUTOHEAL_CONTAINER_LABEL: "all"
 
 {% endif %}
   seq:
     image: datalust/seq:latest
     container_name: seq
+    user: "{{ service_uid }}:{{ service_gid }}"
+    restart: unless-stopped
     environment:
       - "TZ={{ timezone }}"
       - "PUID={{ service_uid }}"
@@ -21,14 +23,15 @@ services:
       - "SEQ_API_CANONICALURI=https://{{ seq_subdomain }}.{{ swag_domain }}"
       - "SEQ_FIRSTRUN_NOAUTHENTICATION=true"
     ports:
-      - 8456:80
+      - 8345:80
     volumes:
       - "{{ seq_mount_path }}:/data:rw"
       - "{{ seq_backup_disk_path }}:/data/backups:rw"
-    restart: unless-stopped
     networks:
       swag_proxy:
       seq_ingestion:
+        aliases:
+          - {{ seq_hostname }}
     healthcheck:
       test: ["CMD-SHELL", "curl 0.0.0.0:5341 || exit 1"]
       interval: 30s
@@ -36,32 +39,38 @@ services:
       retries: 3
       start_period: 10s
     labels:
-      - "autoheal=true"
+      autoheal: "true"
 
   seq-gelf-input:
     image: datalust/seq-input-gelf:latest
     container_name: seq-gelf-input
+    user: "{{ service_uid }}:{{ service_gid }}"
+    restart: unless-stopped
     depends_on:
       - seq
     ports:
       - "{{ seq_gelf_input_port }}:12201/udp"
     environment:
-      SEQ_ADDRESS: "http://seq:5341"
+      TZ: "{{ timezone }}"
+      PUID: "{{ service_uid }}"
+      PGID: "{{ service_gid }}"
+      SEQ_ADDRESS: "http://{{ seq_hostname }}:5341"
       # GELF_ADDRESS: "127.0.0.1:12201/udp"
-    restart: unless-stopped
     networks:
       seq_ingestion:
 
   homeassistant:
     image: homeassistant/home-assistant:latest
+    container_name: homeassistant
+    user: "{{ service_uid }}:{{ service_gid }}"
+    restart: unless-stopped
     depends_on:
       - seq-gelf-input
-    container_name: homeassistant
     environment:
-      - "TZ={{ timezone }}"
-      - "PUID={{ service_uid }}"
-      - "PGID={{ service_gid }}"
-      - "DISABLE_JEMALLOC=true"
+      TZ: "{{ timezone }}"
+      PUID: "{{ service_uid }}"
+      PGID: "{{ service_gid }}"
+      DISABLE_JEMALLOC: "true"
     ports:
       - 8123:8123
     healthcheck:
@@ -74,9 +83,8 @@ services:
       - "{{ homeassistant_backup_disk_path }}:/config/backups:rw"
       - "{{ homeassistant_mount_path }}:/config:rw"
       - /run/dbus:/run/dbus:ro
-    restart: unless-stopped
     labels:
-      - "autoheal=true"
+      autoheal: "true"
     networks:
       homeassistant_backend:
       swag_proxy:
@@ -88,13 +96,15 @@ services:
 
   mqtt:
     image: eclipse-mosquitto:latest
+    container_name: mqtt
+    user: "{{ service_uid }}:{{ service_gid }}"
+    restart: unless-stopped
     depends_on:
       - seq-gelf-input
-    container_name: mqtt
     environment:
-      - "TZ={{ timezone }}"
-      - "PUID={{ service_uid }}"
-      - "PGID={{ service_gid }}"
+      TZ: "{{ timezone }}"
+      PUID: "{{ service_uid }}"
+      PGID: "{{ service_gid }}"
     ports:
       - 9001:9001
     volumes:
@@ -104,8 +114,7 @@ services:
         aliases:
           - {{ mqtt_hostname }}
     labels:
-      - "autoheal=true"
-    restart: unless-stopped
+      autoheal: "true"
     healthcheck:
       test: ["CMD-SHELL", "netstat -tnlp | grep -q {{ mqtt_port }}; echo $?"]
     logging:
@@ -116,37 +125,38 @@ services:
   zigbee2mqtt:
     container_name: zigbee2mqtt
     image: ghcr.io/koenkk/zigbee2mqtt:latest
+    user: "{{ service_uid }}:{{ service_gid }}"
     depends_on:
       - mqtt
       - seq-gelf-input
     restart: unless-stopped
+    environment:
+      TZ: "{{ timezone }}"
+      PUID: "{{ service_uid }}"
+      PGID: "{{ service_gid }}"
+      ZIGBEE2MQTT_CONFIG_MQTT_SERVER: "mqtt://{{ mqtt_hostname }}:{{ mqtt_port }}"
+      ZIGBEE2MQTT_CONFIG_MQTT_VERSION: "{{ mqtt_version }}"
+      ZIGBEE2MQTT_CONFIG_MQTT_BASE_TOPIC: "{{ zigbee2mqtt_base_topic }}"
+      ZIGBEE2MQTT_CONFIG_SERIAL_PORT: "{{ zigbee2mqtt_serial_port }}"
+      ZIGBEE2MQTT_CONFIG_SERIAL_ADAPTER: "{{ zigbee2mqtt_serial_adapter }}"
+      ZIGBEE2MQTT_CONFIG_SERIAL_BAUDRATE: "{{ zigbee2mqtt_serial_baudrate }}"
+      ZIGBEE2MQTT_CONFIG_SERIAL_RTSCTS: "{{ zigbee2mqtt_serial_rtscts }}"
+      ZIGBEE2MQTT_CONFIG_FRONTEND_ENABLED: "{{ zigbee2mqtt_frontend_enabled }}"
+      ZIGBEE2MQTT_CONFIG_FRONTEND_PORT: "8080"
+      ZIGBEE2MQTT_CONFIG_HOMEASSISTANT_ENABLED: "true"
+    ports:
+      - 8234:8080
     volumes:
       - "{{ zigbee2mqtt_mount_path }}:/app/data:rw"
       - "/run/udev:/run/udev:ro"
     devices:
       - "{{ zigbee2mqtt_serial_port }}:{{ zigbee2mqtt_serial_port }}"
-    ports:
-      - 8234:8080
-    environment:
-      - "TZ={{ timezone }}"
-      - "PUID={{ service_uid }}"
-      - "PGID={{ service_gid }}"
-      - "ZIGBEE2MQTT_CONFIG_MQTT_SERVER=mqtt://{{ mqtt_hostname }}:{{ mqtt_port }}"
-      - "ZIGBEE2MQTT_CONFIG_MQTT_VERSION={{ mqtt_version }}"
-      - "ZIGBEE2MQTT_CONFIG_MQTT_BASE_TOPIC={{ zigbee2mqtt_base_topic }}"
-      - "ZIGBEE2MQTT_CONFIG_SERIAL_PORT={{ zigbee2mqtt_serial_port }}"
-      - "ZIGBEE2MQTT_CONFIG_SERIAL_ADAPTER={{ zigbee2mqtt_serial_adapter }}"
-      - "ZIGBEE2MQTT_CONFIG_SERIAL_BAUDRATE={{ zigbee2mqtt_serial_baudrate }}"
-      - "ZIGBEE2MQTT_CONFIG_SERIAL_RTSCTS={{ zigbee2mqtt_serial_rtscts }}"
-      - "ZIGBEE2MQTT_CONFIG_FRONTEND_ENABLED={{ zigbee2mqtt_frontend_enabled }}"
-      - "ZIGBEE2MQTT_CONFIG_FRONTEND_PORT=8080"
-      - "ZIGBEE2MQTT_CONFIG_HOMEASSISTANT_ENABLED=true"
     networks:
       homeassistant_zigbee2mqtt:
       mqtt_connection:
       swag_proxy:
     labels:
-      - "autoheal=true"
+      autoheal: "true"
     healthcheck:
       test: ["CMD-SHELL", "wget --no-verbose --tries=1 --spider http://localhost:8080/ || exit 1"]
       interval: 30s
@@ -165,34 +175,25 @@ services:
     depends_on:
       - mqtt
       - seq-gelf-input
-    ports:
-      - 8345:8056
     volumes:
       - "{{ govee2mqtt_mount_path }}:/data:rw"
     environment:
-      - "TZ={{ timezone }}"
-      - "PUID={{ service_uid }}"
-      - "PGID={{ service_gid }}"
-      - "GOVEE_TEMPERATURE_SCALE={{ govee2mqtt_temperature_scale }}"
-      - "RUST_LOG_STYLE=always"
-      - "GOVEE_MQTT_HOST={{ mqtt_hostname }}"
-      - "GOVEE_MQTT_PORT={{ mqtt_port }}"
-      - "COLORBT_SHOW_HIDDEN=1"
+      TZ: "{{ timezone }}"
+      PUID: "{{ service_uid }}"
+      PGID: "{{ service_gid }}"
+      GOVEE_TEMPERATURE_SCALE: "{{ govee2mqtt_temperature_scale }}"
+      RUST_LOG_STYLE: "always"
+      GOVEE_MQTT_HOST: "{{ mqtt_hostname }}"
+      GOVEE_MQTT_PORT: "{{ mqtt_port }}"
+      COLORBT_SHOW_HIDDEN: "1"
     networks:
       govee2mqtt_host:
       homeassistant_govee2mqtt:
       mqtt_connection:
-    # labels:
-    #   - "autoheal=true"
-    # healthcheck:
-    #   test: ["CMD-SHELL", "/usr/bin/nc -z 0.0.0.0 8056"]
-    #   interval: 30s
-    #   timeout: 10s
-    #   retries: 3
-    # logging:
-    #   driver: gelf
-    #   options:
-    #     gelf-address: "{{ seq_gelf_input_address }}"
+    logging:
+      driver: gelf
+      options:
+        gelf-address: "{{ seq_gelf_input_address }}"
 
   swag:
     image: ghcr.io/linuxserver/swag:latest
@@ -205,14 +206,14 @@ services:
     cap_add:
       - NET_ADMIN
     environment:
-      - "PUID={{ service_uid }}"
-      - "PGID={{ service_gid }}"
-      - "TZ={{ timezone }}"
-      - "URL={{ swag_domain }}"
-      - "SUBDOMAINS={{ swag_subdomains | join(',') }}"
-      - "VALIDATION={{ swag_validation_method }}"
-      - "DNSPLUGIN=cloudflare"
-      - "EMAIL={{ swag_letsencrypt_email }}"
+      TZ: "{{ timezone }}"
+      PUID: "{{ service_uid }}"
+      PGID: "{{ service_gid }}"
+      URL: "{{ swag_domain }}"
+      SUBDOMAINS: "{{ swag_subdomains | join(',') }}"
+      VALIDATION: "{{ swag_validation_method }}"
+      DNSPLUGIN: "cloudflare"
+      EMAIL: "{{ swag_letsencrypt_email }}"
     volumes:
       - "{{ swag_mount_path }}:/config:rw"
     ports:
@@ -220,7 +221,7 @@ services:
       - "{{ swag_http_port }}:{{ swag_http_port }}"
     restart: unless-stopped
     labels:
-      - "autoheal=true"
+      autoheal: "true"
     healthcheck:
       test: ['CMD-SHELL', 'netstat -tnlp | grep -q {{ swag_https_port }}; echo $?']
       interval: 30s

@@ -89,6 +89,7 @@ nut_users_upsadmin_password: "{{ lookup('env', 'NUT_UPSD_UPSADMIN_USER_PASSWORD'
 nut_upsd_port: 3493
 
 seq_subdomain: "seq"
+seq_hostname: "seq"
 seq_mount_path: "{{ home_path }}/seq/data"
 seq_backup_disk_path: "{{ backup_path }}/seq"
 seq_gelf_input_port: 12201
