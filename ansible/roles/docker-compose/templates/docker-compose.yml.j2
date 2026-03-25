@@ -31,14 +31,14 @@ services:
       seq_ingestion:
         aliases:
           - "{{ seq_hostname }}"
+    labels:
+      autoheal: "true"
     healthcheck:
       test: ["CMD-SHELL", "curl 0.0.0.0:5341 || exit 1"]
       interval: 30s
       timeout: 10s
       retries: 3
       start_period: 10s
-    labels:
-      autoheal: "true"
 
   seq-gelf-input:
     image: datalust/seq-input-gelf:latest
@@ -70,22 +70,22 @@ services:
       DISABLE_JEMALLOC: "true"
     ports:
       - 8123:8123
+    volumes:
+      - "{{ homeassistant_backup_disk_path }}:/config/backups:rw"
+      - "{{ homeassistant_mount_path }}:/config:rw"
+      - /run/dbus:/run/dbus:ro
+    networks:
+      homeassistant_backend:
+      swag_proxy:
+      mqtt_connection:
+    labels:
+      autoheal: "true"
     healthcheck:
       test: ["CMD-SHELL", "wget --no-verbose --tries=1 --spider http://0.0.0.0:8123/manifest.json || exit 1"]
       interval: 30s
       timeout: 10s
       retries: 3
       start_period: 10s
-    volumes:
-      - "{{ homeassistant_backup_disk_path }}:/config/backups:rw"
-      - "{{ homeassistant_mount_path }}:/config:rw"
-      - /run/dbus:/run/dbus:ro
-    labels:
-      autoheal: "true"
-    networks:
-      homeassistant_backend:
-      swag_proxy:
-      mqtt_connection:
     logging:
       driver: gelf
       options:
@@ -170,8 +170,6 @@ services:
     depends_on:
       - mqtt
       - seq-gelf-input
-    volumes:
-      - "{{ govee2mqtt_mount_path }}:/data:rw"
     environment:
       TZ: "{{ timezone }}"
       PUID: "{{ service_uid }}"
@@ -181,6 +179,8 @@ services:
       GOVEE_MQTT_HOST: "{{ mqtt_hostname }}"
       GOVEE_MQTT_PORT: "{{ mqtt_port }}"
       COLORBT_SHOW_HIDDEN: "1"
+    volumes:
+      - "{{ govee2mqtt_mount_path }}:/data:rw"
     networks:
       govee2mqtt_host:
       homeassistant_govee2mqtt:
@@ -193,11 +193,12 @@ services:
   swag:
     image: ghcr.io/linuxserver/swag:latest
     container_name: swag
+    restart: unless-stopped
     depends_on:
       - seq
+      - seq-gelf-input
       - homeassistant
       - zigbee2mqtt
-      - seq-gelf-input
     cap_add:
       - NET_ADMIN
     environment:
@@ -209,12 +210,11 @@ services:
       VALIDATION: "{{ swag_validation_method }}"
       DNSPLUGIN: "cloudflare"
       EMAIL: "{{ swag_letsencrypt_email }}"
-    volumes:
-      - "{{ swag_mount_path }}:/config:rw"
     ports:
       - "{{ swag_https_port }}:{{ swag_https_port }}"
       - "{{ swag_http_port }}:{{ swag_http_port }}"
-    restart: unless-stopped
+    volumes:
+      - "{{ swag_mount_path }}:/config:rw"
     labels:
       autoheal: "true"
     healthcheck:
