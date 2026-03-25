@@ -19,8 +19,8 @@ patching_cron:
 
 service_user: "docker"
 service_group: "docker"
-service_uid: 100000
-service_gid: 100000
+service_uid: 1001
+service_gid: 1001
 
 timezone: "America/Los_Angeles"
 
