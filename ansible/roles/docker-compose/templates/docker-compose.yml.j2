@@ -13,7 +13,6 @@ services:
   seq:
     image: datalust/seq:latest
     container_name: seq
-    user: "{{ service_uid }}:{{ service_gid }}"
     restart: unless-stopped
     environment:
       - "TZ={{ timezone }}"
@@ -44,7 +43,6 @@ services:
   seq-gelf-input:
     image: datalust/seq-input-gelf:latest
     container_name: seq-gelf-input
-    user: "{{ service_uid }}:{{ service_gid }}"
     restart: unless-stopped
     depends_on:
       - seq
@@ -62,7 +60,6 @@ services:
   homeassistant:
     image: homeassistant/home-assistant:latest
     container_name: homeassistant
-    user: "{{ service_uid }}:{{ service_gid }}"
     restart: unless-stopped
     depends_on:
       - seq-gelf-input
@@ -97,7 +94,6 @@ services:
   mqtt:
     image: eclipse-mosquitto:latest
     container_name: mqtt
-    user: "{{ service_uid }}:{{ service_gid }}"
     restart: unless-stopped
     depends_on:
       - seq-gelf-input
@@ -125,7 +121,6 @@ services:
   zigbee2mqtt:
     container_name: zigbee2mqtt
     image: ghcr.io/koenkk/zigbee2mqtt:latest
-    user: "{{ service_uid }}:{{ service_gid }}"
     depends_on:
       - mqtt
       - seq-gelf-input

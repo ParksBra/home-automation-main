@@ -15,6 +15,15 @@
   become_user: "{{ ansible_user }}"
   when: docker_version.rc != 0
 
+- name: Configure docker daemon
+  ansible.builtin.template:
+    src: daemon.json.j2
+    dest: /etc/docker/daemon.json
+    owner: "{{ ansible_user }}"
+    group: "{{ ansible_group }}"
+    mode: '0644'
+  notify: restart_docker
+
 - name: Configure docker service
   ansible.builtin.service:
     name: docker
