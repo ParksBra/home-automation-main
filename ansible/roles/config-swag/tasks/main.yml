@@ -43,6 +43,18 @@
     - "{{ role_path }}/templates/nginx/proxy-confs/*.j2*"
   notify: restart_swag
 
+- name: Configure SWAG siteconfs
+  ansible.builtin.template:
+    src: "{{ item }}"
+    dest: "{{ swag_mount_path }}/nginx/site-confs/{{ item | basename | regex_replace('\\.j2$', '') }}"
+    owner: "{{ service_user }}"
+    group: "{{ service_group }}"
+    mode: '660'
+    backup: true
+  with_fileglob:
+    - "{{ role_path }}/templates/nginx/site-confs/*.j2*"
+  notify: restart_swag
+
 - name: Configure NGINX base configuration
   ansible.builtin.template:
     src: "{{ item }}"

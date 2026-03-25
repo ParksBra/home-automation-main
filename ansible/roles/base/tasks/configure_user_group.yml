@@ -17,3 +17,11 @@
     uid: "{{ service_uid }}"
   become: true
   become_user: root
+
+- name: Add ansible user to service group
+  ansible.builtin.user:
+    name: "{{ ansible_user }}"
+    groups: "{{ service_group }}"
+    append: true
+  become: true
+  become_user: root

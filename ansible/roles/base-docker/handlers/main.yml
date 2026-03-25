@@ -1,0 +1,7 @@
+- name: Restart docker daemon
+  ansible.builtin.service:
+    name: docker
+    state: restarted
+  listen: restart_docker
+  become: true
+  become_user: root
