@@ -171,8 +171,8 @@ services:
       - "{{ govee2mqtt_mount_path }}:/data:rw"
     environment:
       - "TZ={{ timezone }}"
-      # - "PUID={{ service_uid }}"
-      # - "PGID={{ service_gid }}"
+      - "PUID={{ service_uid }}"
+      - "PGID={{ service_gid }}"
       - "GOVEE_TEMPERATURE_SCALE={{ govee2mqtt_temperature_scale }}"
       - "RUST_LOG_STYLE=always"
       - "GOVEE_MQTT_HOST={{ mqtt_hostname }}"
