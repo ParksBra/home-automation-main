@@ -158,7 +158,7 @@ services:
       options:
         gelf-address: "{{ seq_gelf_input_address }}"
 
-  {# govee2mqtt:
+  govee2mqtt:
     image: ghcr.io/wez/govee2mqtt:latest
     container_name: govee2mqtt
     restart: unless-stopped
@@ -171,8 +171,8 @@ services:
       - "{{ govee2mqtt_mount_path }}:/data:rw"
     environment:
       - "TZ={{ timezone }}"
-      - "PUID={{ service_uid }}"
-      - "PGID={{ service_gid }}"
+      # - "PUID={{ service_uid }}"
+      # - "PGID={{ service_gid }}"
       - "GOVEE_TEMPERATURE_SCALE={{ govee2mqtt_temperature_scale }}"
       - "RUST_LOG_STYLE=always"
       - "GOVEE_MQTT_HOST={{ mqtt_hostname }}"
@@ -192,7 +192,7 @@ services:
     # logging:
     #   driver: gelf
     #   options:
-    #     gelf-address: "{{ seq_gelf_input_address }}" #}
+    #     gelf-address: "{{ seq_gelf_input_address }}"
 
   swag:
     image: ghcr.io/linuxserver/swag:latest
