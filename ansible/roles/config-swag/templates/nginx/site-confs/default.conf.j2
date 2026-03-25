@@ -1,0 +1,37 @@
+# redirect all traffic to https
+server {
+  listen 80 default_server;
+  listen [::]:80 default_server;
+
+  location / {
+    return 301 https://$host$request_uri;
+  }
+}
+
+# main server block
+server {
+    listen 443 ssl default_server;
+    listen [::]:443 ssl default_server;
+
+    server_name _;
+
+    include /config/nginx/ssl.conf;
+
+    # enable subfolder method reverse proxy confs
+    include /config/nginx/proxy-confs/*.subfolder.conf;
+
+    location / {
+      return 444; # Send no response and close the connection
+    }
+
+    # deny access to .htaccess/.htpasswd files
+    location ~ /\.ht {
+      deny all;
+      return 444;
+    }
+}
+
+# enable subdomain method reverse proxy confs
+include /config/nginx/proxy-confs/*.subdomain.conf;
+# enable proxy cache for auth
+proxy_cache_path cache/ keys_zone=auth_cache:10m;
