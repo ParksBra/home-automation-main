@@ -50,7 +50,7 @@ homeassistant_enable_ip_ban: true
 homeassistant_ip_ban_threshold: 10
 homeassistant_trusted_proxies:
   - "{{ local_lan_cidr }}" # Local Lan
-  - "{{ tailscale_address_cidr }}" # Tailscale network
+  - "{{ tailscale_address_range }}" # Tailscale network
   - "172.16.0.0/12" # Docker network
   - "127.0.0.1/32" # Docker host localhost
 homeassistant_enable_mobile_app: true
@@ -99,7 +99,7 @@ swag_https_port: 443
 swag_http_port: 80
 swag_internal_cidrs:
   - "{{ local_lan_cidr }}" # Local Lan
-  - "{{ tailscale_address_cidr }}" # Tailscale network
+  - "{{ tailscale_address_range }}" # Tailscale network
   - "172.16.0.0/12" # Docker network
   - "127.0.0.1/32" # Docker host localhost
 swag_domain: "{{ lookup('env', 'EXTERNAL_DOMAIN') | default('localhost') }}"
@@ -119,6 +119,7 @@ tailscale_repo: "deb [signed-by={{ tailscale_repo_signing_key_file }}] https://p
 tailscale_auth_key: "{{ lookup('env', 'TAILSCALE_AUTH_KEY') | default('') }}"
 tailscale_address: "0.0.0.0" # This will be set during tailscale role execution
 tailscale_address_cidr: "{{ tailscale_address | default('0.0.0.0') }}/32" # tailscale_address will be set during tailscale role execution
+tailscale_address_range: "100.64.0.0/10"
 tailscale_advertise_tags:
   - "tag:home-server"
 
