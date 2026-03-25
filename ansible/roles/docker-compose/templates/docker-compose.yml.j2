@@ -30,7 +30,7 @@ services:
       swag_proxy:
       seq_ingestion:
         aliases:
-          - {{ seq_hostname }}
+          - "{{ seq_hostname }}"
     healthcheck:
       test: ["CMD-SHELL", "curl 0.0.0.0:5341 || exit 1"]
       interval: 30s
@@ -108,7 +108,7 @@ services:
     networks:
       mqtt_connection:
         aliases:
-          - {{ mqtt_hostname }}
+          - "{{ mqtt_hostname }}"
     labels:
       autoheal: "true"
     healthcheck:
