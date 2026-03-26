@@ -95,6 +95,10 @@ seq_backup_disk_path: "{{ backup_path }}/seq"
 seq_gelf_input_port: 12201
 seq_gelf_input_address: "udp://127.0.0.1:{{ seq_gelf_input_port }}"
 
+node_red_mount_path: "{{ home_path }}/node-red/data"
+node_red_backup_disk_path: "{{ backup_path }}/node-red"
+node_red_port: 1880
+
 swag_https_port: 443
 swag_http_port: 80
 swag_internal_cidrs:

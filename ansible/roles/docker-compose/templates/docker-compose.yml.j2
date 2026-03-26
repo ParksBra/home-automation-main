@@ -78,6 +78,7 @@ services:
       homeassistant_backend:
       swag_proxy:
       mqtt_connection:
+      node_red_backend:
     labels:
       autoheal: "true"
     healthcheck:
@@ -190,6 +191,22 @@ services:
       options:
         gelf-address: "{{ seq_gelf_input_address }}"
 
+  node-red:
+    image: nodered/node-red:latest
+    environment:
+      TZ: "{{ timezone }}"
+      PUID: "{{ service_uid }}"
+      PGID: "{{ service_gid }}"
+    container_name: node-red
+    restart: unless-stopped
+    ports:
+      - "{{ node_red_port }}:1880"
+    volumes:
+      - "{{ node_red_mount_path }}:/data:rw"
+    networks:
+      node_red_backend:
+      swag_proxy:
+
   swag:
     image: ghcr.io/linuxserver/swag:latest
     container_name: swag
@@ -251,4 +268,6 @@ networks:
   mqtt_connection:
     driver: bridge
   seq_ingestion:
+    driver: bridge
+  node_red_backend:
     driver: bridge
