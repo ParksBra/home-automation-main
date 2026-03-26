@@ -195,8 +195,6 @@ services:
     image: nodered/node-red:latest
     environment:
       TZ: "{{ timezone }}"
-      {# PUID: "{{ service_uid }}"
-      PGID: "{{ service_gid }}" #}
     container_name: node-red
     restart: unless-stopped
     ports:
