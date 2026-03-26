@@ -1,0 +1,18 @@
+- name: Ensure backup path exists
+  ansible.builtin.file:
+    dest: "{{ seq_backup_disk_path }}"
+    state: directory
+    owner: "{{ service_user }}"
+    group: "{{ service_group }}"
+    recurse: true
+  changed_when: false
+
+# - name: Set mode for data path
+#   ansible.builtin.file:
+#     dest: "{{ seq_mount_path }}"
+#     state: file
+#     mode: '660'
+#     owner: "{{ service_user }}"
+#     group: "{{ service_group }}"
+#     recurse: true
+#   changed_when: false

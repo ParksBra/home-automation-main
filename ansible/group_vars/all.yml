@@ -160,6 +160,12 @@ backup_mapping:
     exclude:
       - "logs"
       - "backups"
+  node_red:
+    src: "{{ node_red_mount_path }}"
+    dest: "{{ node_red_backup_disk_path }}"
+    quantity: 4
+    exclude:
+      - "log"
   swag:
     src: "{{ swag_mount_path }}"
     dest: "{{ swag_backup_disk_path }}"
