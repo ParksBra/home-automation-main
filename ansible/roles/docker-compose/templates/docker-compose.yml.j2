@@ -74,6 +74,8 @@ services:
       - "{{ homeassistant_backup_disk_path }}:/config/backups:rw"
       - "{{ homeassistant_mount_path }}:/config:rw"
       - /run/dbus:/run/dbus:ro
+    devices:
+      - "{{ zigbee2mqtt_serial_port }}:{{ zigbee2mqtt_serial_port }}"
     networks:
       homeassistant_backend:
       swag_proxy:
