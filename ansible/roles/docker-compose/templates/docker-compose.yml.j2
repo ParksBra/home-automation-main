@@ -234,7 +234,14 @@ services:
 
 networks:
   homeassistant_backend:
-    driver: bridge
+    driver: macvlan
+    driver_opts:
+      parent: {{ docker_network_interface }}
+    ipam:
+      config:
+        - subnet: {{ local_lan_cidr }}
+          gateway: {{ local_lan_default_gateway }}
+          ip_range: {{ homeassistant_ip_range_cidr }}
   swag_proxy:
     driver: bridge
   homeassistant_zigbee2mqtt:
