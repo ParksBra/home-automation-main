@@ -56,7 +56,6 @@ homeassistant_trusted_proxies:
 homeassistant_enable_mobile_app: true
 homeassistant_enable_my: true
 homeassistant_enable_python_script: true
-homeassistant_ip_range_cidr: "192.168.50.188/32"
 
 zigbee2mqtt_mount_path: "{{ home_path }}/zigbee2mqtt/data"
 zigbee2mqtt_backup_disk_path: "{{ backup_path }}/zigbee2mqtt"

@@ -80,6 +80,7 @@ services:
       homeassistant_backend:
       swag_proxy:
       mqtt_connection:
+      host_vlan:
     labels:
       autoheal: "true"
     healthcheck:
@@ -184,7 +185,7 @@ services:
     volumes:
       - "{{ govee2mqtt_mount_path }}:/data:rw"
     networks:
-      govee2mqtt_host:
+      host_vlan:
       homeassistant_govee2mqtt:
       mqtt_connection:
     logging:
@@ -234,21 +235,14 @@ services:
 
 networks:
   homeassistant_backend:
-    driver: macvlan
-    driver_opts:
-      parent: {{ docker_network_interface }}
-    ipam:
-      config:
-        - subnet: {{ local_lan_cidr }}
-          gateway: {{ local_lan_default_gateway }}
-          ip_range: {{ homeassistant_ip_range_cidr }}
+    driver: bridge
   swag_proxy:
     driver: bridge
   homeassistant_zigbee2mqtt:
     driver: bridge
   homeassistant_govee2mqtt:
     driver: bridge
-  govee2mqtt_host:
+  host_vlan:
     driver: macvlan
     driver_opts:
       parent: {{ docker_network_interface }}
